@@ -1,0 +1,399 @@
+/* General Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.editbtn {
+  background-color: #282a74;
+  color: white;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.editstudent {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.groupbtn {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.groupbtn div {
+  width: 50%;
+}
+
+.deletebtn {
+  background-color: red;
+  color: white;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelbtn {
+  background-color: #f48c06;
+  color: white;
+  padding: 8px 10px;
+  border: none;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirm {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-content-list {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 900px;
+  max-height: 500px;
+  max-width: 90%;
+  overflow: auto;
+  position: relative;
+}
+
+.modal-confirm {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px;
+  max-width: 90%;
+  position: relative;
+  overflow: hidden !important;
+}
+
+.edit-group,
+.edit-modal {
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #2f327d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 5px;
+}
+.btn-contact {
+  background-color: #f48c06;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 5px;
+}
+.view-btn {
+  width: auto !important;
+}
+
+.btn:hover {
+  background-color: #292b74;
+}
+.btn-ref {
+  background-color: #2f327d;
+  color: white;
+  border: none;
+  padding: 8px 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 5px;
+}
+
+.btn-ref:hover {
+  background-color: #282a74;
+}
+
+/* Close Button Styling */
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Modal Header and Titles */
+h2,
+h3 {
+  margin-top: 0;
+  color: #333;
+}
+h2 {
+  color: #2f327d;
+}
+
+/* Student List */
+.student-list {
+  margin-top: 5px;
+  max-height: 400px;
+  overflow: auto;
+  margin: 0 auto;
+  /* Enable horizontal scrolling */
+  white-space: nowrap;
+  /* Prevent table cells from wrapping */
+}
+
+.student-list table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.student-list th,
+.student-list td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.student-list th {
+  background-color: #f2f2f2;
+}
+
+.student-list tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-tabs {
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+.btn,
+.btn-contact {
+  width: 200px;
+}
+
+.edit-form form label {
+  font-weight: bold;
+}
+
+.edit-form h3 {
+  margin-top: 10px;
+}
+.deleting-toast {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2f327d;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  font-size: 14px;
+  opacity: 0.9;
+}
+.edit-student-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.edit-student-modal-content {
+  background: white;
+  padding: 20px 30px 20px 20px;
+  border-radius: 8px;
+  width: 70%;
+  max-width: 400px;
+  height: 450px;
+  /* Fixed height */
+  overflow-y: auto;
+  /* Enable vertical scroll */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.edit-student-modal-contents {
+  background: white;
+  padding: 20px 30px 20px 20px;
+  border-radius: 8px;
+  width: 70%;
+  max-width: 400px;
+  height: 150px;
+  /* Fixed height */
+  overflow-y: auto;
+  /* Enable vertical scroll */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Fields */
+.edit-student-input,
+.edit-student-select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Buttons Container */
+.edit-student-modal-buttons {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+  justify-content: center;
+  /* Center horizontally */
+}
+
+/* Save Button */
+.edit-student-save-btn {
+  background: #4caf50;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Cancel Button */
+.edit-student-cancel-btn {
+  background: #f44336;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 100%;
+    padding: 10px;
+  }
+
+  h2 {
+    color: #2f327d;
+    font-size: 1.5rem;
+  }
+
+  .student-list {
+    overflow: auto;
+    /* Enable horizontal scrolling */
+    max-height: none;
+    /* Remove height constraint for smaller screens */
+  }
+
+  .student-list table {
+    font-size: 0.9rem;
+  }
+
+  .student-list th,
+  .student-list td {
+    padding: 6px;
+  }
+
+  .edit-form form div {
+    margin-bottom: 10px;
+  }
+
+  .edit-form input,
+  .edit-form select {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 6px 10px;
+  }
+
+  .close-btn {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px;
+    width: 94%;
+  }
+
+  .modal-content-list {
+    height: 400px;
+  }
+
+  .modal-content {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .btn {
+    width: 150px;
+  }
+
+  .student-list {
+    overflow-x: scroll;
+    /* Ensure horizontal scrolling on small screens */
+  }
+
+  .student-list table {
+    font-size: 0.8rem;
+  }
+
+  .student-list th,
+  .student-list td {
+    padding: 5px;
+  }
+
+  .edit-form input,
+  .edit-form select {
+    font-size: 0.85rem;
+  }
+
+  button {
+    padding: 6px 12px;
+  }
+
+  .close-btn {
+    font-size: 20px;
+  }
+}

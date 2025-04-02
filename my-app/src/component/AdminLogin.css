@@ -1,0 +1,171 @@
+/* General Styles */
+.admin-login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  background-color: #f2fbfc;
+}
+
+.admin-cover {
+  display: flex;
+  height: 100vh !important;
+  background: #fff;
+  width: 100%;
+}
+
+.admin-aside {
+  /* background: linear-gradient(135deg, #6a11cb, #2575fc); */
+  background-color: #faeedf;
+  display: block;
+  width: 55%;
+  /* padding: 50px 0px; */
+  align-content: center;
+  text-align: center;
+}
+
+.admin-login-container {
+  padding-top: 10% !important;
+  background: #fff;
+  width: 45%;
+  padding: 2rem;
+}
+
+.admin-login-header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #2f327d;
+}
+
+.lab {
+  font-size: 15px;
+  margin-bottom: 10px;
+  font-weight: 300;
+  color: #616161 !important;
+}
+
+/* Input Styles */
+/* .admin-login-input {
+  width: 100%;
+  padding: 0.9rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-login-input:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 8px rgba(106, 17, 203, 0.4);
+} */
+
+/* Button Styles */
+.admin-login-button {
+  padding: 8px 40px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 10px 0px;
+  transition: background 0.3s ease;
+}
+
+/* .admin-login-button:hover,
+.admin-login-button-2:hover {
+    background: #007c89;
+    transform: translateY(-2px);
+} */
+
+.Admin-submit {
+  display: flex;
+  justify-content: center;
+}
+
+.Admin-submit button {
+  background: #ffa734;
+  color: #fff;
+}
+
+.Admin-submit button:hover {
+  background: #f48c06;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .admin-login-container {
+    padding: 2rem;
+    background-color: #faeedf;
+  }
+
+  .admin-login-header {
+    font-size: 1.5rem;
+    margin-top: 150px;
+  }
+
+  .admin-login-input,
+  .admin-login-button {
+    font-size: 0.9rem;
+  }
+
+  .admin-aside {
+    display: none;
+  }
+
+  .admin-login-container {
+    width: 100%;
+  }
+}
+
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-container {
+  position: relative;
+  /* margin-bottom: 20px; */
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #c0bfbf !important;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: #fff;
+}
+
+.input-icon {
+  position: absolute;
+  top: 48%;
+  left: 10px;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #ccc;
+}
+
+.admin-login-input {
+  width: 80% !important;
+  padding: 0px 5px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  /* font-size: larger; */
+  background-color: #fff;
+}

@@ -1,0 +1,73 @@
+.Mobile-page {
+  position: relative;
+  background-color: #fff;
+  height: 100vh;
+  width: 100%;
+}
+.app-container-mobile {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+/* Navigation bar at the top */
+.app-navbar {
+  color: #fff;
+  background-color: #faeedf;
+}
+.mobile-head {
+  font-size: 20px;
+  color: #2f327d;
+  /* letter-spacing: 2px; */
+  font-weight: 550;
+  text-align: center;
+}
+.app-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* Main content area expands */
+.app-content {
+  flex: 1;
+  padding: 1em;
+}
+
+.app-footer {
+  background-color: #faeedf;
+  text-align: center;
+  position: relative;
+  padding: 1.8em;
+  /* Added box shadow for depth */
+  box-shadow: 0 0px 20px rgba(223, 222, 222, 0.5);
+}
+/* Creates a small bottom half circle centered at the bottom of the footer */
+.half-circle {
+  width: 46px;
+  /* Adjust width as needed */
+  height: 23px;
+  /* Half of the width for a proportional semi-circle */
+  background: #ffffff;
+  /* Color of the half circle */
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  position: absolute;
+  bottom: 35px;
+  /* Positions the half circle so only the curved part shows */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.foot-button {
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  background-color: #2f327d;
+  font-size: medium;
+  color: white;
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+}

@@ -1,0 +1,13 @@
+/* Add this CSS to center the toast content */
+.custom-toast .Toastify__toast {
+    display: flex;
+    justify-content: center;
+    /* Horizontally center */
+    align-items: center;
+    /* Vertically center */
+}
+/* General Styles */
+* {
+    font-family: 'poppins', sans-serif;
+
+}

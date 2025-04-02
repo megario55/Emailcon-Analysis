@@ -1,0 +1,240 @@
+.excel-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-create-button-cancel-Instant {
+  background-color: #f48c06;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.excel-modal-send-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.excel-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 800px;
+  height: 450px;
+  overflow-y: scroll;
+  max-width: 90%;
+  position: relative;
+}
+
+.excel-modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: black;
+}
+
+.excel-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sample-excel-image {
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+.excel-table-container {
+  margin-top: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.excel-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.excel-table-container th,
+.excel-table-container td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.excel-modal-view-btn,
+.excel-modal-send-btn {
+  margin-top: 20px;
+  margin-right: 10px;
+  padding: 10px;
+  background-color: #2f327d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.excel-modal-view-btn:hover,
+.excel-modal-send-btn:hover {
+  background-color: #2a2c75;
+}
+
+.excel-modal-content input {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 95%;
+}
+.btn-download-sample {
+  padding: 10px 15px;
+  background-color: #2f327d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 15px auto;
+}
+
+.btn-download-sample:hover {
+  background-color: #272a70;
+}
+
+.excel-modal-content label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-send {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider-send:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider-send {
+  background-color: #2f327d;
+}
+
+input:checked + .slider-send:before {
+  transform: translateX(20px);
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.rule-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal Box */
+.rule-modal-container {
+  background: white;
+  width: 400px;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Close Button */
+.rule-close-button {
+  background: #f44336;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.rule-close-button:hover {
+  background: #d32f2f;
+}
+
+/* Steps List */
+.rule-modal-container ol {
+  text-align: left;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.rule-modal-container li {
+  margin: 5px 0;
+}
+
+/* Info Icon */
+.info-icon-rule {
+  cursor: pointer;
+  margin-left: 5px;
+  color: #2f327d;
+}
+
+.info-icon:hover {
+  color: #22245f;
+}
+
+@media (max-width: 768px) {
+  .excel-modal-content {
+    width: 85%;
+    margin: 0 auto;
+  }
+}
