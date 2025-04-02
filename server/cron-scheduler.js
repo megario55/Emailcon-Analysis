@@ -2,7 +2,6 @@ import Camhistory from "./models/Camhistory.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import cron from "node-cron";
-import apiConfig from "../my-app/src/apiconfig/apiConfig.js";
 
 console.log("Cron job started for sending scheduled emails.");
 
@@ -185,10 +184,16 @@ cron.schedule('* * * * *', async () => {
             }    
              // Update campaign history with final status
       const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
-      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`,
+      await axios.put(
+        `${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`,
         {
-                status: finalStatus,
-        });
+          sendcount: sentEmails.length,
+          sentEmails: sentEmails,
+          failedEmails: failedEmails.length > 0 ? failedEmails : 0,
+          failedcount: failedEmails.length > 0 ? failedEmails.length : 0, // Ensure failedcount is 0, not an empty array
+          status: finalStatus,
+        }
+      );
             console.log(`Emails sent successfully for user: ${camhistory.user}`);
         }));
     } catch (error) {
