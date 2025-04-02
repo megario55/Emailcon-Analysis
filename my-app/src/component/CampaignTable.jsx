@@ -133,374 +133,262 @@ function CampaignTable() {
 
   const handleResend = async (campaignId) => {
     try {
+     
       setProcessingCampaigns((prev) => ({ ...prev, [campaignId]: true })); // Set only this campaign as processing
-
+  
       // Fetch campaign details
-      const response = await axios.get(
-        `${apiConfig.baseURL}/api/stud/getcamhistory/${campaignId}`
-      );
+      const response = await axios.get(`${apiConfig.baseURL}/api/stud/getcamhistory/${campaignId}`);
       const campaign = response.data;
       console.log("Fetched campaign data:", campaign);
-
-      if (
-        !campaign ||
-        !campaign.failedEmails ||
-        campaign.failedEmails.length === 0
-      ) {
+  
+      if (!campaign || !campaign.failedEmails || campaign.failedEmails.length === 0) {
         toast.warning("No failed emails to resend.");
         setProcessingCampaigns((prev) => ({ ...prev, [campaignId]: false })); // Reset
         return;
       }
-
+  
       let sentEmails = [];
       let failedEmails = [];
-
+  
       // If groupId is a string (e.g., "no group"), send only to failedEmails and return early
       if (!campaign.groupId || campaign.groupId === "no group") {
         console.log("No group found, sending emails directly.");
         // Update status to 'Pending' before resending
-        await axios.put(
-          `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-          {
-            status: "Pending",
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+        status: "Pending",
+      });
+  
+      for (const email of campaign.failedEmails) {
+        const personalizedContent = campaign.previewContent.map((item) => {
+          const personalizedItem = { ...item };
+  
+          if (item.content) {
+            const placeholderRegex = new RegExp(`\\{?Email\\}?`, "g");
+            personalizedItem.content = personalizedItem.content.replace(placeholderRegex, email);
           }
-        );
-
-        const sendFailedEmails = async (campaign, campaignId) => {
-          const emailPromises = campaign.failedEmails.map(async (email) => {
-            const personalizedContent = campaign.previewContent.map((item) => {
-              const personalizedItem = { ...item };
-
-              if (item.content) {
-                const placeholderRegex = new RegExp(`\\{?Email\\}?`, "g");
-                personalizedItem.content = personalizedItem.content.replace(
-                  placeholderRegex,
-                  email
-                );
-              }
-              return personalizedItem;
-            });
-
-            const emailData = {
-              recipientEmail: email,
-              subject: campaign.subject,
-              aliasName: campaign.aliasName,
-              body: JSON.stringify(personalizedContent),
-              bgColor: campaign.bgColor,
-              previewtext: campaign.previewtext,
-              attachments: campaign.attachments,
-              userId: campaign.user,
-              groupId: campaign.groupname,
-              campaignId: campaignId,
-            };
-
-            try {
-              await axios.post(
-                `${apiConfig.baseURL}/api/stud/sendbulkEmail`,
-                emailData
-              );
-              return { email, success: true };
-            } catch (error) {
-              console.error(`Failed to send email to ${email}:`, error);
-              return { email, success: false };
-            }
-          });
-
-          const results = await Promise.all(emailPromises);
-
-          // Separate successful and failed emails
-          const sentEmails = results
-            .filter((res) => res.success)
-            .map((res) => res.email);
-          const failedEmails = results
-            .filter((res) => !res.success)
-            .map((res) => res.email);
-
-          // Calculate progress
-          const totalEmails = campaign.failedEmails.length;
-          const successProgress = Math.round(
-            (sentEmails.length / totalEmails) * 100
-          );
-          const failProgress = Math.round(
-            (failedEmails.length / totalEmails) * 100
-          );
-          const currentProgress =
-            failedEmails.length > 0 ? failProgress : successProgress;
-
-          // Update campaign history
-          await axios.put(
-            `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-            {
-              sendcount: sentEmails.length,
-              failedcount: failedEmails.length,
-              sentEmails,
-              failedEmails,
-              status: "In Progress",
-              progress: currentProgress,
-            }
-          );
-
-          console.log(`Progress updated: ${currentProgress}%`);
+          return personalizedItem;
+        });
+  
+        const emailData = {
+          recipientEmail: email,
+          subject: campaign.subject,
+          aliasName: campaign.aliasName,
+          body: JSON.stringify(personalizedContent),
+          bgColor: campaign.bgColor,
+          previewtext: campaign.previewtext,
+          attachments: campaign.attachments,
+          userId: campaign.user,
+          groupId: campaign.groupname,
+          campaignId: campaignId,
         };
-
-        // Call the function
-        await sendFailedEmails(campaign, campaignId);
-
-        // Update campaign history
-        const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
-        await axios.put(
-          `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-          {
-            sendcount: Number(campaign.sendcount) + sentEmails.length,
-            sentEmails: [...campaign.sentEmails, ...sentEmails],
-            failedEmails: failedEmails.length > 0 ? [...failedEmails] : 0,
-            failedcount: failedEmails.length > 0 ? failedEmails.length : 0,
-            status: finalStatus,
-          }
-        );
-        console.log("Emails resent successfully!");
-
-        return;
-      }
-
-      // If groupId is a string (e.g., "No id"), send only to failedEmails and return early
-      if (!campaign.groupId || campaign.groupId === "No id") {
-        console.log("No group found, sending emails directly.");
-
-        // Update status to 'Pending' before resending
-        await axios.put(
-          `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-          {
-            status: "Pending",
-          }
-        );
-
-        const sendFailedEmails = async (campaign, campaignId) => {
-          const emailPromises = campaign.failedEmails.map(async (email) => {
-            // Find the corresponding student
-            const student = campaign.exceldata.find((s) => s.Email === email);
-            if (!student) {
-              console.warn(`No matching student found for email: ${email}`);
-              return { email, success: false };
-            }
-
-            // Personalize email content with student details
-            const personalizedContent = campaign.previewContent.map((item) => {
-              const personalizedItem = { ...item };
-
-              if (item.content) {
-                Object.entries(student).forEach(([key, value]) => {
-                  const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
-                  const cellValue = value != null ? String(value).trim() : "";
-                  personalizedItem.content = personalizedItem.content.replace(
-                    placeholderRegex,
-                    cellValue
-                  );
-                });
-              }
-              return personalizedItem;
-            });
-
-            const emailData = {
-              recipientEmail: email,
-              subject: campaign.subject,
-              body: JSON.stringify(personalizedContent),
-              bgColor: campaign.bgColor,
-              previewtext: campaign.previewtext,
-              aliasName: campaign.aliasName,
-              attachments: campaign.attachments,
-              userId: campaign.user,
-              groupId: campaign.groupname,
-              campaignId: campaignId,
-            };
-
-            try {
-              await axios.post(
-                `${apiConfig.baseURL}/api/stud/sendbulkEmail`,
-                emailData
-              );
-              return { email, success: true };
-            } catch (error) {
-              console.error(`Failed to send email to ${email}:`, error);
-              return { email, success: false };
-            }
-          });
-
-          const results = await Promise.all(emailPromises);
-
-          // Separate successful and failed emails
-          const sentEmails = results
-            .filter((res) => res.success)
-            .map((res) => res.email);
-          const failedEmails = results
-            .filter((res) => !res.success)
-            .map((res) => res.email);
-
-          // Calculate progress
-          const totalEmails = campaign.failedEmails.length;
-          const successProgress = Math.round(
-            (sentEmails.length / totalEmails) * 100
-          );
-          const failProgress = Math.round(
-            (failedEmails.length / totalEmails) * 100
-          );
-          const currentProgress =
-            failedEmails.length > 0 ? failProgress : successProgress;
-
-          // Update campaign history
-          await axios.put(
-            `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-            {
-              sendcount: sentEmails.length,
-              failedcount: failedEmails.length,
-              sentEmails,
-              failedEmails,
-              status: "In Progress",
-              progress: currentProgress,
-            }
-          );
-
-          console.log(`Progress updated: ${currentProgress}%`);
-        };
-
-        // Call the function
-        await sendFailedEmails(campaign, campaignId);
-
-        // Update campaign history
-        const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
-        await axios.put(
-          `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-          {
-            sendcount: Number(campaign.sendcount) + sentEmails.length,
-            sentEmails: [...campaign.sentEmails, ...sentEmails],
-            failedEmails: failedEmails.length > 0 ? [...failedEmails] : 0,
-            failedcount: failedEmails.length > 0 ? failedEmails.length : 0,
-            status: finalStatus,
-          }
-        );
-        console.log("Emails resent successfully!");
-
-        return;
-      }
-
-      // If groupId exists, fetch students and follow existing logic
-      const studentsResponse = await axios.get(
-        `${apiConfig.baseURL}/api/stud/groups/${campaign.groupId}/students`
-      );
-      const students = studentsResponse.data;
-
-      // Update status to 'Pending' before resending
-      await axios.put(
-        `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-        {
-          status: "Pending",
-        }
-      );
-
-      const sendFailedEmails = async (campaign, campaignId) => {
-        const emailPromises = campaign.failedEmails.map(async (email) => {
-          // Find the corresponding student
-          const student = students.find((s) => s.Email === email);
-          if (!student) {
-            console.warn(`No matching student found for email: ${email}`);
-            return { email, success: false };
-          }
-
-          // Personalize email content with student details
-          const personalizedContent = campaign.previewContent.map((item) => {
-            const personalizedItem = { ...item };
-
-            if (item.content) {
-              Object.entries(student).forEach(([key, value]) => {
-                const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
-                const cellValue = value != null ? String(value).trim() : "";
-                personalizedItem.content = personalizedItem.content.replace(
-                  placeholderRegex,
-                  cellValue
-                );
-              });
-            }
-            return personalizedItem;
-          });
-
-          const emailData = {
-            recipientEmail: email,
-            subject: campaign.subject,
-            body: JSON.stringify(personalizedContent),
-            bgColor: campaign.bgColor,
-            previewtext: campaign.previewtext,
-            attachments: campaign.attachments,
-            aliasName: campaign.aliasName,
-            userId: campaign.user,
-            groupId: campaign.groupname,
-            campaignId: campaignId,
-          };
-
+  
           try {
-            await axios.post(
-              `${apiConfig.baseURL}/api/stud/sendbulkEmail`,
-              emailData
-            );
-            return { email, success: true };
+            await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+            sentEmails.push(email);
           } catch (error) {
             console.error(`Failed to send email to ${email}:`, error);
-            return { email, success: false };
+            failedEmails.push(email);
           }
-        });
-
-        const results = await Promise.all(emailPromises);
-
-        // Separate successful and failed emails
-        const sentEmails = results
-          .filter((res) => res.success)
-          .map((res) => res.email);
-        const failedEmails = results
-          .filter((res) => !res.success)
-          .map((res) => res.email);
-
-        // Calculate progress
-        const totalEmails = campaign.failedEmails.length;
-        const successProgress = Math.round(
-          (sentEmails.length / totalEmails) * 100
-        );
-        const failProgress = Math.round(
-          (failedEmails.length / totalEmails) * 100
-        );
-        const currentProgress =
-          failedEmails.length > 0 ? failProgress : successProgress;
-
+        // **Update progress dynamically**
+      const totalEmails = campaign.failedEmails.length;
+      const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+      const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
+      const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+  
+      // **Update the database after each email is processed**
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+          sendcount: sentEmails.length,
+          failedcount: failedEmails.length,
+          sentEmails,
+          failedEmails,
+          status: "In Progress",
+          progress: currentProgress, // Updated progress calculation
+      });
+  
+      console.log(`Progress updated: ${currentProgress}%`);
+        }
+  
         // Update campaign history
-        await axios.put(
-          `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-          {
-            sendcount: sentEmails.length,
-            failedcount: failedEmails.length,
-            sentEmails,
-            failedEmails,
-            status: "In Progress",
-            progress: currentProgress,
-          }
-        );
-
-        console.log(`Progress updated: ${currentProgress}%`);
-      };
-
-      // Call the function
-      await sendFailedEmails(campaign, campaignId);
-
-      // Update campaign history
-      const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
-      await axios.put(
-        `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-        {
+        const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
+        await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
           sendcount: Number(campaign.sendcount) + sentEmails.length,
           sentEmails: [...campaign.sentEmails, ...sentEmails],
           failedEmails: failedEmails.length > 0 ? [...failedEmails] : 0,
           failedcount: failedEmails.length > 0 ? failedEmails.length : 0,
           status: finalStatus,
+        });
+        console.log("Emails resent successfully!");
+  
+        return;
+      }
+  
+      // If groupId is a string (e.g., "No id"), send only to failedEmails and return early
+      if (!campaign.groupId || campaign.groupId === "No id") {
+        console.log("No group found, sending emails directly.");
+  
+      // Update status to 'Pending' before resending
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+        status: "Pending",
+      });
+  
+      for (const email of campaign.failedEmails) {
+        // Find the corresponding student
+        const student = campaign.exceldata.find((s) => s.Email === email);
+        if (!student) {
+          console.warn(`No matching student found for email: ${email}`);
+          failedEmails.push(email);
+          continue;
         }
-      );
+  
+        // Personalize email content with student details
+        const personalizedContent = campaign.previewContent.map((item) => {
+          const personalizedItem = { ...item };
+  
+          if (item.content) {
+            Object.entries(student).forEach(([key, value]) => {
+              const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
+              const cellValue = value != null ? String(value).trim() : "";
+              personalizedItem.content = personalizedItem.content.replace(placeholderRegex, cellValue);
+            });
+          }
+          return personalizedItem;
+        });
+  
+        const emailData = {
+          recipientEmail: email,
+          subject: campaign.subject,
+          body: JSON.stringify(personalizedContent),
+          bgColor: campaign.bgColor,
+          previewtext: campaign.previewtext,
+          aliasName: campaign.aliasName,
+          attachments: campaign.attachments,
+          userId: campaign.user,
+          groupId: campaign.groupname,
+          campaignId: campaignId,
+        };
+  
+          try {
+            await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+            sentEmails.push(email);
+          } catch (error) {
+            console.error(`Failed to send email to ${email}:`, error);
+            failedEmails.push(email);
+          }
+             // **Update progress dynamically**
+      const totalEmails = campaign.failedEmails.length;
+      const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+      const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
+      const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+  
+      // **Update the database after each email is processed**
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+          sendcount: sentEmails.length,
+          failedcount: failedEmails.length,
+          sentEmails,
+          failedEmails,
+          status: "In Progress",
+          progress: currentProgress, // Updated progress calculation
+      });
+  
+      console.log(`Progress updated: ${currentProgress}%`);
+        }
+  
+        // Update campaign history
+        const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
+        await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+          sendcount: Number(campaign.sendcount) + sentEmails.length,
+          sentEmails: [...campaign.sentEmails, ...sentEmails],
+          failedEmails: failedEmails.length > 0 ? [...failedEmails] : 0,
+          failedcount: failedEmails.length > 0 ? failedEmails.length : 0,
+          status: finalStatus,
+        });
+        console.log("Emails resent successfully!");
+  
+        return;
+      }
+  
+      // If groupId exists, fetch students and follow existing logic
+      const studentsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/groups/${campaign.groupId}/students`);
+      const students = studentsResponse.data;
+  
+      // Update status to 'Pending' before resending
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+        status: "Pending",
+      });
+  
+      for (const email of campaign.failedEmails) {
+        // Find the corresponding student
+        const student = students.find((s) => s.Email === email);
+        if (!student) {
+          console.warn(`No matching student found for email: ${email}`);
+          failedEmails.push(email);
+          continue;
+        }
+  
+        // Personalize email content with student details
+        const personalizedContent = campaign.previewContent.map((item) => {
+          const personalizedItem = { ...item };
+  
+          if (item.content) {
+            Object.entries(student).forEach(([key, value]) => {
+              const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
+              const cellValue = value != null ? String(value).trim() : "";
+              personalizedItem.content = personalizedItem.content.replace(placeholderRegex, cellValue);
+            });
+          }
+          return personalizedItem;
+        });
+  
+        const emailData = {
+          recipientEmail: email,
+          subject: campaign.subject,
+          body: JSON.stringify(personalizedContent),
+          bgColor: campaign.bgColor,
+          previewtext: campaign.previewtext,
+          attachments: campaign.attachments,
+          aliasName: campaign.aliasName,
+          userId: campaign.user,
+          groupId: campaign.groupname,
+          campaignId: campaignId,
+        };
+  
+        try {
+          await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+          sentEmails.push(email);
+        } catch (error) {
+          console.error(`Failed to send email to ${email}:`, error);
+          failedEmails.push(email);
+        }
+           // **Update progress dynamically**
+      const totalEmails = campaign.failedEmails.length;
+      const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+      const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
+      const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+  
+      // **Update the database after each email is processed**
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+          sendcount: sentEmails.length,
+          failedcount: failedEmails.length,
+          sentEmails,
+          failedEmails,
+          status: "In Progress",
+          progress: currentProgress, // Updated progress calculation
+      });
+  
+      console.log(`Progress updated: ${currentProgress}%`);
+      }
+  
+      // Update campaign history
+      const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
+      await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+        sendcount: Number(campaign.sendcount) + sentEmails.length,
+        sentEmails: [...campaign.sentEmails, ...sentEmails],
+        failedEmails: failedEmails.length > 0 ? [...failedEmails] : 0,
+        failedcount: failedEmails.length > 0 ? failedEmails.length : 0,
+        status: finalStatus,
+      });
       console.log("Emails resent successfully!");
+  
     } catch (error) {
       console.error("Error resending emails:", error);
     } finally {

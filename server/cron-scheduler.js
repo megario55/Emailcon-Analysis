@@ -2,6 +2,8 @@ import Camhistory from "./models/Camhistory.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import cron from "node-cron";
+import apiConfig from "../my-app/src/apiconfig/apiConfig.js";
+
 
 console.log("Cron job started for sending scheduled emails.");
 
