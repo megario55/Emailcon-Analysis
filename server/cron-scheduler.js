@@ -75,12 +75,13 @@ async function sendEmailsDirectly(camhistory, sentEmails, failedEmails) {
     const results = await Promise.allSettled(emailPromises);
 
     results.forEach(result => {
-        if (result.status === 'fulfilled') {
+        if (result.status === 'fulfilled' && result.value) {
             sentEmails.push(result.value.email);
-        } else {
-            failedEmails.push(result.email);
+        } else if (result.status === 'rejected' && result.reason) {
+            failedEmails.push(result.reason.email || "Unknown");
         }
     });
+    
 
     await updateProgress(camhistory._id, sentEmails, failedEmails, recipients.length);
 }
@@ -100,12 +101,13 @@ async function sendEmailsFromExcel(camhistory, sentEmails, failedEmails) {
     const results = await Promise.allSettled(emailPromises);
 
     results.forEach(result => {
-        if (result.status === "fulfilled") {
-            sentEmails.push(result.email);
-        } else {
-            failedEmails.push(result.email);
+        if (result.status === 'fulfilled' && result.value) {
+            sentEmails.push(result.value.email);
+        } else if (result.status === 'rejected' && result.reason) {
+            failedEmails.push(result.reason.email || "Unknown");
         }
     });
+    
 
     await updateProgress(camhistory._id, sentEmails, failedEmails, camhistory.exceldata.length);
 }
@@ -128,13 +130,13 @@ async function sendEmailsFromGroup(camhistory, groupId, sentEmails, failedEmails
         const results = await Promise.allSettled(emailPromises);
 
         results.forEach(result => {
-            if (result.status === "fulfilled") {
-                sentEmails.push(result.email);
-            } else {
-                failedEmails.push(result.email);
+            if (result.status === 'fulfilled' && result.value) {
+                sentEmails.push(result.value.email);
+            } else if (result.status === 'rejected' && result.reason) {
+                failedEmails.push(result.reason.email || "Unknown");
             }
         });
-
+        
         await updateProgress(camhistory._id, sentEmails, failedEmails, students.length);
     } catch (error) {
         console.error("Failed to fetch group data:", error);
@@ -176,8 +178,10 @@ function prepareEmailData(camhistory, recipientEmail, bodyContent) {
 
 async function sendEmailRequest(emailData) {
     try {
-        await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+        const response = await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+        console.log("Email sent successfully:", response.data);
     } catch (error) {
+        console.error("Email send request failed:", error.response?.data || error.message);
         throw new Error(`Email send request failed: ${error.message}`);
     }
 }
