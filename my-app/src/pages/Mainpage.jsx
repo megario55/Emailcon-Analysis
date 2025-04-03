@@ -79,6 +79,8 @@ const templateRef = useRef(null);
 const [openedGroups, setOpenedGroups] = useState({});
 const dropdownRef = useRef(null);
 
+
+
 const handleGroupChange = (e, index) => {
   const groupName = e.target.value;
 
@@ -4344,6 +4346,7 @@ const sendscheduleEmail = async () => {
 
         {/* Modal */}
 {modalOpen && (
+  
   <div className="modal">
     <div className="modal-content testmail-content">
       <h2>Send Single Mail</h2>
@@ -4355,10 +4358,8 @@ const sendscheduleEmail = async () => {
         value={emailData.recipient}
         onChange={(e) =>
           setEmailData({ ...emailData, recipient: e.target.value })
-        }
-      />
-          <label htmlFor="Alias Name">Alias Name:</label>
-
+        }/>
+      <label htmlFor="Alias Name">Alias Name:</label>
       <input
         type="text"
         placeholder="Alias Name"
@@ -4376,6 +4377,7 @@ const sendscheduleEmail = async () => {
           setEmailData({ ...emailData, subject: e.target.value })
         }
       />
+     
       <label htmlFor="preview-text">Preview Text:</label>
       <input
         type="text"

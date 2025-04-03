@@ -15,6 +15,7 @@ const GroupfileModal = ({ onClose }) => {
   const [groups, setGroups] = useState([]);
   const [fileName, setFileName] = useState("");
   const [isRuleOpen, setIsRuleOpen] = useState("");
+  const [isLoadingsave,setIsLoadingsave] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ const GroupfileModal = ({ onClose }) => {
   };
 
   const handleSaveUploadedData = () => {
+    setIsLoadingsave(true);
     if (selectedGroupForUpload && uploadedData.length > 1) {
       const headers = uploadedData[0]; // Assuming the first row contains the headers
       const payload = uploadedData.slice(1).map((row) => {
@@ -96,6 +98,7 @@ const GroupfileModal = ({ onClose }) => {
           toast.success("Uploaded data saved successfully");
           setUploadedData([]); // Clear data after saving
           setFileName(""); // Clear file name
+          setIsLoadingsave(false);
           setTimeout(() => {
             onClose();
           }, 3000);
@@ -105,10 +108,12 @@ const GroupfileModal = ({ onClose }) => {
           }
         })
         .catch((error) => {
+          setIsLoadingsave(false);
           console.error("Error saving uploaded data:", error);
           toast.error("Failed to save uploaded data");
         });
     } else {
+      setIsLoadingsave(false);
       toast.error("Please select a group and ensure excel data is uploaded");
     }
   };
@@ -248,8 +253,13 @@ const GroupfileModal = ({ onClose }) => {
             <button
               className="modal-btn btn-save-uploaded-data"
               onClick={handleSaveUploadedData}
-            >
-              Save Upload
+              disabled={isLoadingsave}
+              >
+                {isLoadingsave ? (
+                  <span className="loader-create"></span> // Spinner
+                ) : (
+                  "Save Upload"
+                )}{" "}
             </button>
             <button
               className="modal-create-button-cancel-add"

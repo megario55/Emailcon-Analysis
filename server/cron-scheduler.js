@@ -138,6 +138,13 @@ cron.schedule('* * * * *', async () => {
                 await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
                 
                 await Promise.all(students.map(async (student) => {
+                      // Replace placeholders in subject
+        let personalizedSubject = camhistory.subject;
+        Object.entries(student).forEach(([key, value]) => {
+            const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
+            const cellValue = value != null ? String(value).trim() : "";
+            personalizedSubject = personalizedSubject.replace(placeholderRegex, cellValue);
+        });
                     const personalizedContent = camhistory.previewContent.map(item => {
                         if (!item.content) return item;
                         let updatedContent = item.content;
@@ -150,7 +157,7 @@ cron.schedule('* * * * *', async () => {
                     
                     const emailData = {
                         recipientEmail: student.Email,
-                        subject: camhistory.subject,
+                        subject:personalizedSubject,
                         body: JSON.stringify(personalizedContent),
                         bgColor: camhistory.bgColor,
                         previewtext: camhistory.previewtext,

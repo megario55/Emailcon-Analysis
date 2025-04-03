@@ -1256,6 +1256,7 @@ input:checked+.slider-send:before {
     gap: 10px;
     margin: 10px 0;
 }
+  
 
 
 @media (max-width: 768px) {
@@ -1289,6 +1290,8 @@ input:checked+.slider-send:before {
     position: relative;
     display: inline-block;
   }
+
+  
   .list-field{
     font-size: 15px;
     margin-bottom: 5px;

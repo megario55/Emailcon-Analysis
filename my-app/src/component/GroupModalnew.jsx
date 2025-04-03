@@ -20,6 +20,7 @@ const GroupModalnew = ({ onClose }) => {
   const [isRuleOpen, setIsRuleOpen] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingsave, setIsLoadingsave] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -130,6 +131,7 @@ const GroupModalnew = ({ onClose }) => {
   };
 
   const handleSaveUploadedData = () => {
+    setIsLoadingsave(true);
     if (selectedGroupForUpload && uploadedData.length > 1) {
       const headers = uploadedData[0]; // Assuming the first row contains the headers
       const payload = uploadedData.slice(1).map((row) => {
@@ -149,6 +151,7 @@ const GroupModalnew = ({ onClose }) => {
             setIsFirstModal(false);
             setIsSecondModalOpen(false);
           }, 3000);
+          setIsLoadingsave(false);
           toast.success("Uploaded data saved successfully");
           setUploadedData([]); // Clear data after saving
           setFileName(""); // Clear file name
@@ -158,6 +161,7 @@ const GroupModalnew = ({ onClose }) => {
           }
         })
         .catch((error) => {
+          setIsLoadingsave(false);
           console.error("Error saving uploaded data:", error);
           toast.error("Failed to save uploaded data");
         });
@@ -334,8 +338,13 @@ const GroupModalnew = ({ onClose }) => {
                 <button
                   className="modal-btn btn-save-uploaded-data"
                   onClick={handleSaveUploadedData}
-                >
-                  Save Upload
+                  disabled={isLoadingsave}
+                  >
+                    {isLoadingsave ? (
+                      <span className="loader-create"></span> // Spinner
+                    ) : (
+                      "Save Upload"
+                    )}{" "}
                 </button>
                 <button
                   onClick={onClose}

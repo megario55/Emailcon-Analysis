@@ -11,6 +11,30 @@
   z-index: 9999;
 }
 
+.dropdown-container-sub {
+  position: absolute;
+  right: 5px; /* Position the dropdown to the left */
+  top: -170px !important;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 150px;
+  max-height: 150px;
+  overflow: auto;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.dropdown-container-sub h4 {
+  font-size: 14px;
+  color: #333;
+}
+.select-group-container-sub {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .send-modal-submit-btn:disabled {
   background: #ccc;
   cursor: not-allowed;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,9 +17,80 @@ const SendbulkModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
   const [previewtext, setPreviewtext] = useState("");
   const [aliasName, setAliasName] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
+  const [selectedGroupsub,setSelectedGroupsub]= useState(false);
+  const [fieldNames, setFieldNames] = useState({});
+  const [students, setStudents] = useState([]); // Stores all students
+  
   const user = JSON.parse(localStorage.getItem("user"));
   const campaign = JSON.parse(localStorage.getItem("campaign"));
   const navigate = useNavigate();
+  const dropdownRef=useRef(null);
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setSelectedGroupsub(false); // Close dropdown
+          setFieldNames([]);
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+  
+  const handleGroupChangesubject = (e) => {
+    const groupName = e.target.value;
+  
+    // Reset and reopen the dropdown instantly
+    setSelectedGroupsub("");
+    setTimeout(() => setSelectedGroupsub(groupName), 0);
+  
+    if (!students?.length) {
+      console.log("No students available yet.");
+      return;
+    }
+  
+    // Filter students by selected group
+    const filteredStudents = students.filter(
+      (student) => student.group?._id === groupName
+    );
+  
+    // Extract field names from the first student found
+    const newFieldNames = filteredStudents.length
+      ? Object.keys(filteredStudents[0]).filter(
+          (key) => !["_id", "group", "__v"].includes(key)
+        )
+      : [];
+  
+    setFieldNames(newFieldNames);
+  };
+
+  const handleInsertNamesubject = (value) => {
+    setMessage((prev) => (prev ? `${prev} ${value}` : value));
+  
+    // Reset selected group dropdown properly
+    setSelectedGroupsub(false);
+  };
+  
+  useEffect(() => {
+    if (!user?.id) return;
+  
+    const fetchGroupsAndStudents = async () => {
+      try {
+        const groupsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/groups/${user.id}`);
+        setGroups(groupsResponse.data);
+  
+        const studentsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/students`);
+        setStudents(studentsResponse.data);
+      } catch (err) {
+        console.log("Error fetching data:", err);
+      }
+    };
+  
+    fetchGroupsAndStudents();
+  }, [user.id]); 
+  
 
   useEffect(() => {
     if (isOpen) {
@@ -245,10 +316,21 @@ const SendbulkModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
             }
             return personalizedItem;
           });
+            // Replace placeholders in subject
+    let personalizedSubject = message;
+    Object.entries(student).forEach(([key, value]) => {
+      const placeholderRegex = new RegExp(`\\{?${key}\\}?`, "g");
+      const cellValue = value != null ? String(value).trim() : "";
+      personalizedSubject = personalizedSubject.replace(
+        placeholderRegex,
+        cellValue
+      );
+    });
+
 
           const emailData = {
             recipientEmail: student.Email,
-            subject: message,
+            subject: personalizedSubject,
             body: JSON.stringify(personalizedContent),
             bgColor,
             attachments,
@@ -355,6 +437,50 @@ const SendbulkModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Enter your message here"
           />
+           <div className="select-group-container-sub" ref={dropdownRef}>
+                    {/* Select Group */}
+                    <select
+                      onChange={(e) => handleGroupChangesubject(e)}
+                      value=""
+                      className="select-variable"
+                    >
+                      <option value="" disabled className="template-title">
+                        Add Variable
+                      </option>
+                      <option value="" disabled>
+                        Select Group
+                      </option>
+                      {groups.map((group, idx) => (
+                        <option key={idx} value={group._id}>
+                          {group.name}
+                        </option>
+                      ))}
+                    </select>
+          
+                    {/* Show fields only for the selected heading */}
+                    {selectedGroupsub && (
+                      <div className="dropdown-container-sub">
+                        <p className="template-title">
+                          <span>Add</span> Variable
+                        </p>
+                        {fieldNames&& fieldNames.length > 0 ? (
+                          <div>
+                            {fieldNames.map((field, idx) => (
+                              <div
+                                className="list-field"
+                                key={idx}
+                                onClick={() => handleInsertNamesubject(`{${field}}`)}
+                              >
+                                {field}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="no-variables">No Variables</p>
+                        )}
+                      </div>
+                    )}
+                </div>
 
           <label htmlFor="preview-text">Preview Text:</label>
           <textarea
