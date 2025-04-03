@@ -41,7 +41,7 @@ const Clicksinglemainpage = () => {
   const [selectedContent, setSelectedContent] = useState(""); // Store selected content
   const { campaignId } = useParams();
   const location = useLocation();
-  const singleemails = location.state?.singleemails || []; // Get emails from state
+  const singleemails = location.state?.emails || []; // Get emails from state
   const [clickcampaigns, setClickcampaigns] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const [emailData, setEmailData] = useState({
@@ -609,7 +609,7 @@ const handleTemplateSelect = (template) => {
          backgroundColor: "black",
          color: "#ffffff",
          width: "auto",
-         marginTop: "10px",
+         marginTop: "20px",
          alignItems: "center",
          borderRadius: "5px",
        },
@@ -619,7 +619,7 @@ const handleTemplateSelect = (template) => {
          backgroundColor: "black",
          color: "#ffffff",
          width: "auto",
-         marginTop: "10px",
+         marginTop: "20px",
          alignItems: "center",
          borderRadius: "5px",
        },

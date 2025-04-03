@@ -45,13 +45,8 @@
   margin: 15px auto;
   background: #ffffff;
   border-radius: 8px;
-
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 }
-/* .cam-scroll{
-    height: 580px !important;
-     overflow: auto;
-} */
+
 
 .cam-dashboard-table th {
   text-align: center;

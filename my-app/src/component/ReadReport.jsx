@@ -54,9 +54,7 @@ const ReadReport = () => {
     if (!userId || !campaignId) return;
 
     const fetchClickData = () => {
-      axios
-        .get(
-          `${apiConfig.baseURL}/api/stud/get-click?userId=${userId}&campaignId=${campaignId}`
+      axios.get(`${apiConfig.baseURL}/api/stud/get-click?userId=${userId}&campaignId=${campaignId}`
         )
         .then((response) => {
           setUrlCount(response.data.count);
