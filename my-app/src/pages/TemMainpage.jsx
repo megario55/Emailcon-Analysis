@@ -876,7 +876,7 @@ const sendscheduleEmail = async () => {
       console.log("Initial Campaign History Saved:", campaignResponse.data);
   
      // Send emails concurrently using Promise.all
-    await Promise.all(
+    await Promise.allSettled(
       recipients.map(async (email, index) => {
         try {
           const response = await axios.post(`${apiConfig.baseURL}/api/stud/sendtestmail`, {

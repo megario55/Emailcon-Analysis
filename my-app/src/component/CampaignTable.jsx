@@ -157,8 +157,7 @@ function CampaignTable() {
     await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
       status: "Pending",
     });
-
-    for (const email of campaign.failedEmails) {
+    await Promise.allSettled(campaign.failedEmails.map(async (email) => {
       const personalizedContent = campaign.previewContent.map((item) => {
         const personalizedItem = { ...item };
 
@@ -206,7 +205,7 @@ function CampaignTable() {
     });
 
     console.log(`Progress updated: ${currentProgress}%`);
-      }
+      }));
 
       // Update campaign history
       const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
@@ -232,14 +231,13 @@ function CampaignTable() {
       status: "Pending",
     });
 
-    for (const email of campaign.failedEmails) {
+    await Promise.allSettled(campaign.failedEmails.map(async (email) => {
       // Find the corresponding student
       const student = campaign.exceldata.find((s) => s.Email === email);
       if (!student) {
         console.warn(`No matching student found for email: ${email}`);
         failedEmails.push(email);
-        continue;
-      }
+        return;}
      
 
       // Personalize email content with student details
@@ -293,7 +291,7 @@ function CampaignTable() {
     });
 
     console.log(`Progress updated: ${currentProgress}%`);
-      }
+      }));
 
       // Update campaign history
       const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";
@@ -318,13 +316,13 @@ function CampaignTable() {
       status: "Pending",
     });
 
-    for (const email of campaign.failedEmails) {
+    await Promise.allSettled(campaign.failedEmails.map(async (email) => {
       // Find the corresponding student
       const student = students.find((s) => s.Email === email);
       if (!student) {
         console.warn(`No matching student found for email: ${email}`);
         failedEmails.push(email);
-        continue;
+        return;
       }
         // Replace placeholders in subject
   let personalizedSubject = campaign.subject;
@@ -385,7 +383,7 @@ function CampaignTable() {
     });
 
     console.log(`Progress updated: ${currentProgress}%`);
-    }
+    }));
 
     // Update campaign history
     const finalStatus = failedEmails.length > 0 ? "Failed" : "Success";

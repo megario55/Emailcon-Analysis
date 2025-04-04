@@ -299,8 +299,7 @@ const SendbulkModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
       const campaignId = campaignResponse.data.id; // Assume response includes campaign ID
       console.log("Initial Campaign History Saved:", campaignResponse.data);
 
-      await Promise.all(
-        students.map(async (student) => {
+      await Promise.allSettled(students.map(async (student) => {
           const personalizedContent = previewContent.map((item) => {
             const personalizedItem = { ...item };
 

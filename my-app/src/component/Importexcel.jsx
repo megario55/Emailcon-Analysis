@@ -341,7 +341,7 @@ const ExcelModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
         }
       });
 
-      await Promise.all(emailPromises);
+      await Promise.allSettled(emailPromises);
 
       // After all emails are processed, calculate the final progress and status
       const totalEmails = rows.filter((row) => row[emailIndex]).length; // Count non-empty emails
