@@ -190,9 +190,9 @@ function CampaignTable() {
         }
       // **Update progress dynamically**
     const totalEmails = campaign.totalcount;
-    const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+    // const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
     const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
-    const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+    const currentProgress = failedEmails.length > 0 ? failProgress : 100;
 
     // **Update the database after each email is processed**
     await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
@@ -276,9 +276,9 @@ function CampaignTable() {
         }
            // **Update progress dynamically**
     const totalEmails = campaign.totalcount;
-    const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+    // const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
     const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
-    const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+    const currentProgress = failedEmails.length > 0 ? failProgress : 100;
 
     // **Update the database after each email is processed**
     await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
@@ -368,9 +368,9 @@ function CampaignTable() {
       }
          // **Update progress dynamically**
     const totalEmails = campaign.totalcount;
-    const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+    // const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
     const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
-    const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+    const currentProgress = failedEmails.length > 0 ? failProgress : 100;
 
     // **Update the database after each email is processed**
     await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
@@ -402,7 +402,8 @@ function CampaignTable() {
     setProcessingCampaigns((prev) => ({ ...prev, [campaignId]: false })); // Reset processing state
   }
 };
-  const filteredCampaigns = campaigns.filter((campaign) =>
+
+const filteredCampaigns = campaigns.filter((campaign) =>
     Object.values(campaign)
       .join(" ")
       .toLowerCase()
