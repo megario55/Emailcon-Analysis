@@ -26,7 +26,7 @@ cron.schedule('* * * * *', async () => {
             return;
         }
 
-        await Promise.all(camhistories.map(async (camhistory) => {
+        await Promise.allSettled(camhistories.map(async (camhistory) => {
             console.log(`Processing scheduled email for user: ${camhistory.user}`);
             const groupId = camhistory.groupId?.trim();
             let sentEmails = [];
@@ -38,7 +38,7 @@ cron.schedule('* * * * *', async () => {
                 
                 let recipients = camhistory.recipients.split(",").map(email => email.trim());
                 
-                await Promise.all(recipients.map(async (email) => {
+                await Promise.allSettled(recipients.map(async (email) => {
                     const personalizedContent = camhistory.previewContent.map(item =>
                         item.content ? { ...item, content: item.content.replace(/\{?Email\}?/g, email) } : item
                     );
@@ -83,7 +83,7 @@ cron.schedule('* * * * *', async () => {
                 console.log("No valid ID found, resending only to failed emails.");
                 await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
                 
-                await Promise.all(camhistory.exceldata.map(async (student) => {
+                await Promise.allSettled(camhistory.exceldata.map(async (student) => {
                     const personalizedContent = camhistory.previewContent.map(item => {
                         if (!item.content) return item;
                         let updatedContent = item.content;
@@ -137,7 +137,7 @@ cron.schedule('* * * * *', async () => {
                 const students = studentsResponse.data;
                 await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
                 
-                await Promise.all(students.map(async (student) => {
+                await Promise.allSettled(students.map(async (student) => {
                       // Replace placeholders in subject
         let personalizedSubject = camhistory.subject;
         Object.entries(student).forEach(([key, value]) => {
