@@ -226,7 +226,7 @@ router.post('/sendtestmail', async (req, res) => {
       }
 
       else if (item.type === 'imagewithtext') {
-        return `<table class="image-text" style="width:100%;height:220px !important;background-color:${item.style1.backgroundColor || '#f4f4f4'}; border-collapse:seperate;border-radius:${item.style1.borderRadius || '10px'};margin:15px 0px !important">
+        return `<table class="image-text" style="width:100%;height:220px !important;background-color:${item.style1.backgroundColor || '#f4f4f4'}; border-collapse:seperate;border-radius:${item.style1.borderRadius || '10px'};margin:20px 0px !important">
         <tr>
             <td style = "vertical-align:top;padding:10px;" >
                 <img src="${item.src1}" style="border-radius:10px;width:200px !important;height:auto;pointer-events:none !important; object-fit:cover;" alt="image"/>                  
@@ -241,7 +241,7 @@ router.post('/sendtestmail', async (req, res) => {
       }
 
       else if (item.type === 'textwithimage') {
-        return `<table class="image-text" style="width:100%;height:220px !important;background-color:${item.style.backgroundColor || '#f4f4f4'}; border-collapse:seperate;border-radius:${item.style.borderRadius || '10px'};margin:15px 0px !important">
+        return `<table class="image-text" style="width:100%;height:220px !important;background-color:${item.style.backgroundColor || '#f4f4f4'}; border-collapse:seperate;border-radius:${item.style.borderRadius || '10px'};margin:20px 0px !important">
         <tr>
           <td style = "vertical-align:top;padding:10px;color:${item.style.color || 'black'};" >
                 <div class="img-para" style="overflow: auto;max-height: 200px !important;font-size:18px;">
@@ -593,13 +593,13 @@ router.post('/sendexcelEmail', async (req, res) => {
           <tr>
               <td style="width:50%;text-align:center;padding:8px; vertical-align:top;">
                   <img src="${src1}" style="border-radius:10px;object-fit:contain;height:230px !important;width:100%;pointer-events:none !important; object-fit:cover; ${styleString}" alt="image"/>
-                  <a class="img-btn" href="${generateTrackingLink(link1, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString1}; display:inline-block; padding:12px 25px; text-decoration:none;">
+                  <a class="img-btn" href="${generateTrackingLink(link1, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString1}; display:inline-block; margin-top:20px;padding:12px 25px; text-decoration:none;">
                       ${content1}
                   </a>
               </td>
               <td style="width:50%;text-align:center;padding:8px; vertical-align:top;">
                   <img src="${src2}" style="border-radius:10px;object-fit:contain;height:230px !important;width:100%;pointer-events:none !important; object-fit:cover;${styleString}" alt="image"/>
-                  <a class="img-btn" href="${generateTrackingLink(link2, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString2}; display:inline-block; padding:12px 25px; text-decoration:none;">
+                  <a class="img-btn" href="${generateTrackingLink(link2, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString2}; display:inline-block;margin-top:20px; padding:12px 25px; text-decoration:none;">
                       ${content2}
                   </a>
               </td>
@@ -969,13 +969,13 @@ router.post('/sendbulkEmail', async (req, res) => {
           <tr>
               <td style="width:50%;text-align:center;padding:8px; vertical-align:top;">
                   <img src="${src1}" style="border-radius:10px;object-fit:contain;height:230px !important;width:100%;pointer-events:none !important; object-fit:cover; ${styleString}" alt="image"/>
-                  <a class="img-btn" href="${generateTrackingLink(link1, userId, campaignId, recipientEmail)}"  target="_blank" style="${stylebuttonString1}; display:inline-block; padding:12px 25px; text-decoration:none;">
+                  <a class="img-btn" href="${generateTrackingLink(link1, userId, campaignId, recipientEmail)}"  target="_blank" style="${stylebuttonString1}; display:inline-block;margin-top:20px; padding:12px 25px; text-decoration:none;">
                       ${content1}
                   </a>
               </td>
               <td style="width:50%;text-align:center;padding:8px; vertical-align:top;">
                   <img src="${src2}" style="border-radius:10px;object-fit:contain;height:230px !important;width:100%;pointer-events:none !important; object-fit:cover;${styleString}" alt="image"/>
-                  <a class="img-btn" href="${generateTrackingLink(link2, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString2}; display:inline-block; padding:12px 25px; text-decoration:none;">
+                  <a class="img-btn" href="${generateTrackingLink(link2, userId, campaignId, recipientEmail)}" target="_blank" style="${stylebuttonString2}; display:inline-block;margin-top:20px; padding:12px 25px; text-decoration:none;">
                       ${content2}
                   </a>
               </td>
