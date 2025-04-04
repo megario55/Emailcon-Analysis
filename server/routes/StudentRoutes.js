@@ -139,7 +139,7 @@ router.post('/sendtestmail', async (req, res) => {
                     <a class = "img-btn"
                     href="${generateTrackingLink(item.link1, userId, campaignId, emailData.recipient)}"
                     target = "_blank"
-                    style = "display:inline-block;padding:12px 25px;width:${item.buttonStyle1.width || 'auto'};color:${item.buttonStyle1.color || '#000'};text-decoration:none;background-color:${item.buttonStyle1.backgroundColor || '#f0f0f0'};text-align:${item.buttonStyle1.textAlign || 'left'};border-radius:${item.buttonStyle1.borderRadius || '5px'};" >
+                    style = "display:inline-block;padding:12px 25px;margin-top:20px;width:${item.buttonStyle1.width || 'auto'};color:${item.buttonStyle1.color || '#000'};text-decoration:none;background-color:${item.buttonStyle1.backgroundColor || '#f0f0f0'};text-align:${item.buttonStyle1.textAlign || 'left'};border-radius:${item.buttonStyle1.borderRadius || '5px'};" >
                         ${item.content1}
                     </a>
             </td>
@@ -148,7 +148,7 @@ router.post('/sendtestmail', async (req, res) => {
                     <a class = "img-btn"
                     href="${generateTrackingLink(item.link2, userId, campaignId, emailData.recipient)}"
                     target = "_blank"
-                    style = "display:inline-block;padding:12px 25px;width:${item.buttonStyle2.width || 'auto'};color:${item.buttonStyle2.color || '#000'};text-decoration:none;background-color:${item.buttonStyle2.backgroundColor || '#f0f0f0'};text-align:${item.buttonStyle2.textAlign || 'left'};border-radius:${item.buttonStyle2.borderRadius || '5px'};" >
+                    style = "display:inline-block;padding:12px 25px;margin-top:20px;width:${item.buttonStyle2.width || 'auto'};color:${item.buttonStyle2.color || '#000'};text-decoration:none;background-color:${item.buttonStyle2.backgroundColor || '#f0f0f0'};text-align:${item.buttonStyle2.textAlign || 'left'};border-radius:${item.buttonStyle2.borderRadius || '5px'};" >
                         ${item.content2}
                     </a>
             </td>
