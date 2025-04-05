@@ -964,9 +964,9 @@ if (!campaignName.includes("OverallClick-Retarget")) {
             }
             // Update progress dynamically
             const totalEmails = recipients.length;
-            const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+            // const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
             const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
-            const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+            const currentProgress = failedEmails.length > 0 ? failProgress : 100;
       
             // Update the database after each email is processed
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {

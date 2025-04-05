@@ -345,14 +345,14 @@ const ExcelModal = ({ isOpen, onClose, previewContent = [], bgColor }) => {
 
       // After all emails are processed, calculate the final progress and status
       const totalEmails = rows.filter((row) => row[emailIndex]).length; // Count non-empty emails
-      const successProgress = Math.round(
-        (sentEmails.length / totalEmails) * 100
-      );
+      // const successProgress = Math.round(
+      //   (sentEmails.length / totalEmails) * 100
+      // );
       const failProgress = Math.round(
         (failedEmails.length / totalEmails) * 100
       );
       const finalProgress =
-        failedEmails.length > 0 ? failProgress : successProgress;
+        failedEmails.length > 0 ? failProgress : 100;
 
       // Update campaign history with final status and progress
       await axios.put(

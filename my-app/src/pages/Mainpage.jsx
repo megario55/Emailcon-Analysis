@@ -897,9 +897,9 @@ const sendscheduleEmail = async () => {
         }
         // Update progress dynamically
         const totalEmails = recipients.length;
-        const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
+        // const successProgress = Math.round((sentEmails.length / totalEmails) * 100);
         const failProgress = Math.round((failedEmails.length / totalEmails) * 100);
-        const currentProgress = failedEmails.length > 0 ? failProgress : successProgress;
+        const currentProgress = failedEmails.length > 0 ? failProgress : 100;
   
         // Update the database after each email is processed
         await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
@@ -1999,6 +1999,27 @@ const sendscheduleEmail = async () => {
                                     %
                                   </span>
 
+                                  <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
+
                                   <ColorPicker
         label="Image Background"
         objectKey="style.backgroundColor"
@@ -2212,6 +2233,26 @@ const sendscheduleEmail = async () => {
                                     )}
                                     %
                                   </span>
+                                  <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
        
               <ColorPicker
         label="Image Background"
@@ -2914,6 +2955,26 @@ const sendscheduleEmail = async () => {
                               %
                             </span>
 
+                            <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
                             <div className="editor-bg">
                               Image Background
                               <input
@@ -3256,6 +3317,26 @@ const sendscheduleEmail = async () => {
                               )}
                               %
                             </span>
+                            <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
 
                             <div className="editor-bg">
                               Image Background
