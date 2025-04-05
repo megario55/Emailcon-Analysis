@@ -260,7 +260,7 @@ router.post('/sendtestmail', async (req, res) => {
         </div>`;
       } else if (item.type === 'button') {
         return `<div style="text-align:${item.style.textAlign || 'left'};padding-top:20px;">
-                  <a href="${generateTrackingLink(item.link, userId, campaignId, emailData.recipient)}" target="_blank" style="display:inline-block;padding:12px 25px;width:${item.style.width || 'auto'};color:${item.style.color || '#000'};text-decoration:none;background-color:${item.style.backgroundColor || '#f0f0f0'};text-align:${item.style.textAlign || 'left'};border-radius:${item.style.borderRadius || '0px'};">
+                  <a href="${generateTrackingLink(item.link, userId, campaignId, emailData.recipient)}" target="_blank" style="display:inline-block;font-weight:bold;font-size:${item.style.fontSize};padding:12px 25px;width:${item.style.width || 'auto'};color:${item.style.color || '#000'};text-decoration:none;background-color:${item.style.backgroundColor || '#f0f0f0'};text-align:${item.style.textAlign || 'left'};border-radius:${item.style.borderRadius || '0px'};">
                     ${item.content || 'Button'}
                   </a>
                 </div>`;

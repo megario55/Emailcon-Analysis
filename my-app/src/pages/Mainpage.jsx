@@ -636,6 +636,8 @@ const handleTemplateSelect = (template) => {
           color: "#ffffff",
           width: "auto",
           marginTop: "5px",
+          fontWeight: "bold",
+          fontSize: "15px",
           alignItem: "center",
           borderRadius: "5px",
         },
@@ -2456,49 +2458,52 @@ const sendscheduleEmail = async () => {
                               <option value="center">Center</option>
                               <option value="right">Right</option>
                             </select>
-
                             <label>Button Size:</label>
-                            <div>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "auto",
-                                    },
-                                  })
-                                }
-                              >
-                                Small
-                              </button>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "60%",
-                                    },
-                                  })
-                                }
-                              >
-                                Medium
-                              </button>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "85%",
-                                    },
-                                  })
-                                }
-                              >
-                                Large
-                              </button>
-                            </div>
+<div style={{ display: "flex", justifyContent: "center"}}>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "auto",
+          margin: "0 auto", // Centering the button
+        },
+      })
+    }
+  >
+    Small
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "65%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Medium
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "90%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Large
+  </button>
+</div>
+
 
                             <label>Border Radius:</label>
                             <input
@@ -2519,6 +2524,26 @@ const sendscheduleEmail = async () => {
                                 })
                               }
                             />
+                             <label>Button Text Size:</label>
+                            <input
+                              type="range"
+                              min="10"
+                              max="30"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.fontSize.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    fontSize: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
 
                             <label>Link:</label>
                             <input
