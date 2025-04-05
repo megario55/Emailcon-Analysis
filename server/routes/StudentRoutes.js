@@ -352,7 +352,7 @@ router.post('/sendtestmail', async (req, res) => {
               <div style="display:none !important; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
                 ${emailData.previewtext}  
               </div>
-            <div class="main" style ="background-color:${bgColor || "white"};box-shadow:0 4px 8px rgba(0, 0, 0, 0.2);border:1px solid rgb(255, 245, 245);padding:20px;width:650px;height:auto;border-radius:10px;margin:0 auto;" >
+            <div class="main" style ="background-color:${bgColor || "white"};box-shadow:0 4px 8px rgba(0, 0, 0, 0.2);border:1px solid rgb(255, 245, 245);padding:20px;width:700px;height:auto;border-radius:10px;margin:0 auto;" >
               ${emailContent}
               ${trackingPixel}
             </div>
@@ -729,7 +729,7 @@ router.post('/sendexcelEmail', async (req, res) => {
             <div style="display:none !important; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
               ${previewtext}
             </div>
-              <div class="main" style="background-color:${bgColor || "white"}; box-shadow:0 4px 8px rgba(0, 0, 0, 0.2); border:1px solid rgb(255, 245, 245); padding:20px;width:650px;height:auto;border-radius:10px;margin:0 auto;">
+              <div class="main" style="background-color:${bgColor || "white"}; box-shadow:0 4px 8px rgba(0, 0, 0, 0.2); border:1px solid rgb(255, 245, 245); padding:20px;width:700px;height:auto;border-radius:10px;margin:0 auto;">
                 ${dynamicHtml}
                 ${trackingPixel}
               </div>
@@ -1105,7 +1105,7 @@ router.post('/sendbulkEmail', async (req, res) => {
             <div style="display:none !important; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
               ${previewtext}
             </div>
-              <div class="main" style="background-color:${bgColor || "white"}; box-shadow:0 4px 8px rgba(0, 0, 0, 0.2); border:1px solid rgb(255, 245, 245); padding:20px;width:650px;height:auto;border-radius:10px;margin:0 auto;">
+              <div class="main" style="background-color:${bgColor || "white"}; box-shadow:0 4px 8px rgba(0, 0, 0, 0.2); border:1px solid rgb(255, 245, 245); padding:20px;width:700px;height:auto;border-radius:10px;margin:0 auto;">
                 ${dynamicHtml}
                  ${trackingPixel}
               </div>

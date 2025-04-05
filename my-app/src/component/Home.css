@@ -231,7 +231,7 @@ li {
   }
 
   .maincontent-main {
-    margin-top: 20%;
+    margin-top: 22%;
   }
   .home-modal {
     width: 300px !important;
@@ -252,11 +252,7 @@ li {
     gap: 5px;
   }
 
-  .nav-split h4 {
-    top: 0% !important;
-    right: 16% !important;
-    font-size: 1.1rem !important;
-  }
+
 
   .desktop-content {
     display: block !important;
@@ -283,8 +279,10 @@ li {
     top: -2% !important;
   }
   .nav-split h4 {
-    right: 11% !important;
+    right: 5% !important;
+    width: 180px !important;
     top: -5% !important;
+    font-size: 1.1rem !important;
   }
   .sidebar-container {
     display: flex;
@@ -439,7 +437,7 @@ li {
   border: none;
   outline: none;
   width: 100%;
-  height: 8%;
+  height: 10%;
   display: flex;
   justify-content: space-between;
   /* position: relative; */

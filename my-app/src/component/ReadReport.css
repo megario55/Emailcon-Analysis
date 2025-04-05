@@ -193,4 +193,16 @@
   .reports-content div {
     margin-bottom: 10px;
   }
+  .modal-content-read {
+    width: 88%;
+  }
+  .close-modal-read {
+    top: 5px;
+    right: 5px;
+  }
+  .modal-content-read-graph {
+    width: 88%;
+  }
+
+
 }

@@ -648,6 +648,8 @@ const handleTemplateSelect = (template) => {
           backgroundColor: "black",
           color: "#ffffff",
           width: "auto",
+          fontSize: "15px",
+          fontWeight: "bold",
           marginTop: "5px",
           alignItem: "center",
           borderRadius: "5px",
@@ -1436,867 +1438,926 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                 </button>
               </div>
             </div>
-
             {/* Styling Controls */}
-          <>
-                        {selectedIndex !== null && previewContent[selectedIndex] && (
+            <>
+              {selectedIndex !== null && previewContent[selectedIndex] && (
+                <>
+                  {isMobilestyle ? (
+                    <>
+                      {isModalOpenstyle && (
+                        <div className="modal-overlay-send" >
+                          <div className="modal-content-style">
+                            <button
+                              className="close-btn-style"
+                              onClick={() => setIsModalOpenstyle(false)}
+                            >
+                              X
+                            </button>
+                            <h3>Style Controls</h3>
+                            <div className="style-item">
+                              {previewContent[selectedIndex].type ===
+                                "para" && (
+                                <>
+                  <ColorPicker
+        label="Text Color"
+        objectKey="style.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+      <ColorPicker 
+        label="Text Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                </>
+                              )}
+                              {previewContent[selectedIndex].type === "multipleimage" && (
                           <>
-                            {isMobilestyle ? (
-                              <>
-                                {isModalOpenstyle && (
-                                  <div className="modal-overlay-send" >
-                                    <div className="modal-content-style">
+                          <div style={{textAlign:"center"}}>No style control for this type</div>
+                           </>
+                              )}
+{previewContent[selectedIndex].type === "cardimage" && (
+                          <>
+                           <ColorPicker
+        label="Text Color"
+        objectKey="style1.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+      <ColorPicker 
+        label="Text Background"
+        objectKey="style1.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                           
+                          </>
+                        )}
+
+
+                              {previewContent[selectedIndex].type ===
+                                "head" && (
+                                <>
+                                  <label>Font Size:</label>
+                                  <input
+                                    type="number"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.fontSize.replace("px", "")
+                                    )}
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          fontSize: `${e.target.value}px`,
+                                        },
+                                      })
+                                    }
+                                  />
+                                 <ColorPicker
+        label="Text Color"
+        objectKey="style.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+      <ColorPicker 
+        label="Text Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                  <label>Text Alignment:</label>
+                                  <select
+                                    value={
+                                      previewContent[selectedIndex].style
+                                        .textAlign
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          textAlign: e.target.value,
+                                        },
+                                      })
+                                    }
+                                  >
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                  </select>
+                                </>
+                              )}
+                              {previewContent[selectedIndex].type ===
+                                "button" && (
+                                <>
+                                  <label>Button name:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter button name"
+                                    value={
+                                      previewContent[selectedIndex].content ||
+                                      ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        content: e.target.value,
+                                      })
+                                    }
+                                  />
+                                <ColorPicker
+        label="Text Color"
+        objectKey="style.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+      <ColorPicker 
+        label="Text Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                  <label>Text Alignment:</label>
+                                  <select
+                                    value={
+                                      previewContent[selectedIndex]?.style
+                                        ?.textAlign || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          textAlign: e.target.value,
+                                        },
+                                      })
+                                    }
+                                  >
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                  </select>
+                                  <label>Button Size:</label>
+<div>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "50%",
+          margin: "0 auto", // Centering the button
+        },
+      })
+    }
+  >
+    Small
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "70%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Medium
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "90%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Large
+  </button>
+</div>
+
+                                  <label>Border Radius:</label>
+                                  <input
+                                    type="range"
+                                    min="0"
+                                    max="50"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.borderRadius.replace("px", "")
+                                    )}
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          borderRadius: `${e.target.value}px`,
+                                        },
+                                      })
+                                    }
+                                  />
+                                  <label>Button Text Size:</label>
+                            <input
+                              type="range"
+                              min="10"
+                              max="30"
+                              value={parseInt(
+                                (previewContent[selectedIndex]?.style?.fontSize || "15px").replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    fontSize: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
+
+
+                                  <label>Link:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].link || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        link: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </>
+                              )}
+
+                              {/* New Editor for Multi-Image Links and Button Styling */}
+                              {previewContent[selectedIndex].type ===
+                                "multi-image" && (
+                                <>
+                                  <h4>Button-1 Styles</h4>
+                                  <div>
+                                    <label>Button Name:</label>
+                                    <input
+                                      type="text"
+                                      placeholder="Enter button name"
+                                      value={
+                                        previewContent[selectedIndex]
+                                          .content1 || ""
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          content1: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <label>Button Link:</label>
+                                    <input
+                                      type="text"
+                                      value={
+                                        previewContent[selectedIndex].link1
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          link1: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <ColorPicker
+        label="Button Text Color"
+        objectKey="buttonStyle1.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+      <ColorPicker 
+        label="Button Text Background"
+        objectKey="buttonStyle1.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                    <label>Text Alignment:</label>
+                                    <select
+                                      value={
+                                        previewContent[selectedIndex]
+                                          ?.buttonStyle1?.textAlign || ""
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          buttonStyle1: {
+                                            ...previewContent[selectedIndex]
+                                              .buttonStyle1,
+                                            textAlign: e.target.value,
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <option value="left">Left</option>
+                                      <option value="center">Center</option>
+                                      <option value="right">Right</option>
+                                    </select>
+                                    <label>Button Size:</label>
+                                    <div>
                                       <button
-                                        className="close-btn-style"
-                                        onClick={() => setIsModalOpenstyle(false)}
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle1: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle1,
+                                              width: "auto",
+                                            },
+                                          })
+                                        }
                                       >
-                                        X
+                                        Small
                                       </button>
-                                      <h3>Style Controls</h3>
-                                      <div className="style-item">
-                                        {previewContent[selectedIndex].type ===
-                                          "para" && (
-                                          <>
-                            <ColorPicker
-                  label="Text Color"
-                  objectKey="style.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                <ColorPicker 
-                  label="Text Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                          </>
-                                        )}
-                                        {previewContent[selectedIndex].type === "multipleimage" && (
-                                    <>
-                                    <div style={{textAlign:"center"}}>No style control for this type</div>
-                                     </>
-                                        )}
-          {previewContent[selectedIndex].type === "cardimage" && (
-                                    <>
-                                     <ColorPicker
-                  label="Text Color"
-                  objectKey="style1.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                <ColorPicker 
-                  label="Text Background"
-                  objectKey="style1.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                     
-                                    </>
-                                  )}
-          
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "head" && (
-                                          <>
-                                            <label>Font Size:</label>
-                                            <input
-                                              type="number"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.fontSize.replace("px", "")
-                                              )}
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    fontSize: `${e.target.value}px`,
-                                                  },
-                                                })
-                                              }
-                                            />
-                                           <ColorPicker
-                  label="Text Color"
-                  objectKey="style.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                <ColorPicker 
-                  label="Text Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                            <label>Text Alignment:</label>
-                                            <select
-                                              value={
-                                                previewContent[selectedIndex].style
-                                                  .textAlign
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    textAlign: e.target.value,
-                                                  },
-                                                })
-                                              }
-                                            >
-                                              <option value="left">Left</option>
-                                              <option value="center">Center</option>
-                                              <option value="right">Right</option>
-                                            </select>
-                                          </>
-                                        )}
-                                        {previewContent[selectedIndex].type ===
-                                          "button" && (
-                                          <>
-                                            <label>Button name:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter button name"
-                                              value={
-                                                previewContent[selectedIndex].content ||
-                                                ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  content: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          <ColorPicker
-                  label="Text Color"
-                  objectKey="style.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                <ColorPicker 
-                  label="Text Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                            <label>Text Alignment:</label>
-                                            <select
-                                              value={
-                                                previewContent[selectedIndex]?.style
-                                                  ?.textAlign || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    textAlign: e.target.value,
-                                                  },
-                                                })
-                                              }
-                                            >
-                                              <option value="left">Left</option>
-                                              <option value="center">Center</option>
-                                              <option value="right">Right</option>
-                                            </select>
-          
-                                            <label>Button Size:</label>
-                                            <div>
-                                              <button
-                                                className="modal-btn-size"
-                                                onClick={() =>
-                                                  updateContent(selectedIndex, {
-                                                    style: {
-                                                      ...previewContent[selectedIndex]
-                                                        .style,
-                                                      width: "auto",
-                                                    },
-                                                  })
-                                                }
-                                              >
-                                                Small
-                                              </button>
-                                              <button
-                                                className="modal-btn-size"
-                                                onClick={() =>
-                                                  updateContent(selectedIndex, {
-                                                    style: {
-                                                      ...previewContent[selectedIndex]
-                                                        .style,
-                                                      width: "60%",
-                                                    },
-                                                  })
-                                                }
-                                              >
-                                                Medium
-                                              </button>
-                                              <button
-                                                className="modal-btn-size"
-                                                onClick={() =>
-                                                  updateContent(selectedIndex, {
-                                                    style: {
-                                                      ...previewContent[selectedIndex]
-                                                        .style,
-                                                      width: "85%",
-                                                    },
-                                                  })
-                                                }
-                                              >
-                                                Large
-                                              </button>
-                                            </div>
-          
-                                            <label>Border Radius:</label>
-                                            <input
-                                              type="range"
-                                              min="0"
-                                              max="50"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.borderRadius.replace("px", "")
-                                              )}
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    borderRadius: `${e.target.value}px`,
-                                                  },
-                                                })
-                                              }
-                                            />
-          
-                                            <label>Link:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].link || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  link: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </>
-                                        )}
-          
-                                        {/* New Editor for Multi-Image Links and Button Styling */}
-                                        {previewContent[selectedIndex].type ===
-                                          "multi-image" && (
-                                          <>
-                                            <h4>Button-1 Styles</h4>
-                                            <div>
-                                              <label>Button Name:</label>
-                                              <input
-                                                type="text"
-                                                placeholder="Enter button name"
-                                                value={
-                                                  previewContent[selectedIndex]
-                                                    .content1 || ""
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    content1: e.target.value,
-                                                  })
-                                                }
-                                              />
-                                              <label>Button Link:</label>
-                                              <input
-                                                type="text"
-                                                value={
-                                                  previewContent[selectedIndex].link1
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    link1: e.target.value,
-                                                  })
-                                                }
-                                              />
-                                              <ColorPicker
-                  label="Button Text Color"
-                  objectKey="buttonStyle1.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                <ColorPicker 
-                  label="Button Text Background"
-                  objectKey="buttonStyle1.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                              <label>Text Alignment:</label>
-                                              <select
-                                                value={
-                                                  previewContent[selectedIndex]
-                                                    ?.buttonStyle1?.textAlign || ""
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    buttonStyle1: {
-                                                      ...previewContent[selectedIndex]
-                                                        .buttonStyle1,
-                                                      textAlign: e.target.value,
-                                                    },
-                                                  })
-                                                }
-                                              >
-                                                <option value="left">Left</option>
-                                                <option value="center">Center</option>
-                                                <option value="right">Right</option>
-                                              </select>
-                                              <label>Button Size:</label>
-                                              <div>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle1: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle1,
-                                                        width: "auto",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Small
-                                                </button>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle1: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle1,
-                                                        width: "50%",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Medium
-                                                </button>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle1: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle1,
-                                                        width: "80%",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Large
-                                                </button>
-                                              </div>
-                                              <label>Border Radius:</label>
-                                              <input
-                                                type="range"
-                                                min="0"
-                                                max="50"
-                                                value={parseInt(
-                                                  previewContent[
-                                                    selectedIndex
-                                                  ].buttonStyle1.borderRadius.replace(
-                                                    "px",
-                                                    ""
-                                                  )
-                                                )}
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    buttonStyle1: {
-                                                      ...previewContent[selectedIndex]
-                                                        .buttonStyle1,
-                                                      borderRadius: `${e.target.value}px`,
-                                                    },
-                                                  })
-                                                }
-                                              />
-                                            </div>
-                                            <h4>Button-2 Style</h4>
-                                            <div>
-                                              <label>Button Name:</label>
-                                              <input
-                                                type="text"
-                                                placeholder="Enter button name"
-                                                value={
-                                                  previewContent[selectedIndex]
-                                                    .content2 || ""
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    content2: e.target.value,
-                                                  })
-                                                }
-                                              />
-          
-                                              <label>Button Link:</label>
-                                              <input
-                                                type="text"
-                                                value={
-                                                  previewContent[selectedIndex].link2
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    link2: e.target.value,
-                                                  })
-                                                }
-                                              />
-          
-          <ColorPicker
-                  label="Button Text Color"
-                  objectKey="buttonStyle2.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                        <ColorPicker
-                  label="Button Text Background"
-                  objectKey="buttonStyle2.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-          
-                                              <label>Text Alignment:</label>
-                                              <select
-                                                value={
-                                                  previewContent[selectedIndex]
-                                                    ?.buttonStyle2?.textAlign || ""
-                                                }
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    buttonStyle2: {
-                                                      ...previewContent[selectedIndex]
-                                                        .buttonStyle2,
-                                                      textAlign: e.target.value,
-                                                    },
-                                                  })
-                                                }
-                                              >
-                                                <option value="left">Left</option>
-                                                <option value="center">Center</option>
-                                                <option value="right">Right</option>
-                                              </select>
-          
-                                              <label>Button Size:</label>
-                                              <div>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle2: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle2,
-                                                        width: "auto",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Small
-                                                </button>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle2: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle2,
-                                                        width: "50%",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Medium
-                                                </button>
-                                                <button
-                                                  className="modal-btn-size"
-                                                  onClick={() =>
-                                                    updateContent(selectedIndex, {
-                                                      buttonStyle2: {
-                                                        ...previewContent[selectedIndex]
-                                                          .buttonStyle2,
-                                                        width: "80%",
-                                                      },
-                                                    })
-                                                  }
-                                                >
-                                                  Large
-                                                </button>
-                                              </div>
-          
-                                              <label>Border Radius:</label>
-                                              <input
-                                                type="range"
-                                                min="0"
-                                                max="50"
-                                                value={parseInt(
-                                                  previewContent[
-                                                    selectedIndex
-                                                  ].buttonStyle2.borderRadius.replace(
-                                                    "px",
-                                                    ""
-                                                  )
-                                                )}
-                                                onChange={(e) =>
-                                                  updateContent(selectedIndex, {
-                                                    buttonStyle2: {
-                                                      ...previewContent[selectedIndex]
-                                                        .buttonStyle2,
-                                                      borderRadius: `${e.target.value}px`,
-                                                    },
-                                                  })
-                                                }
-                                              />
-                                            </div>
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex]?.type ===
-                                          "icons" && (
-                                          <>
-                  
-                        <ColorPicker
-                  label="Background Color"
-                  objectKey="ContentStyle.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                            <label>Link1:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].links1 || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  links1: e.target.value,
-                                                })
-                                              }
-                                            />
-          
-                                            <label>Link2:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].links2 || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  links2: e.target.value,
-                                                })
-                                              }
-                                            />
-          
-                                            <label>Link3:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].links3 || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  links3: e.target.value,
-                                                })
-                                              }
-                                            />
-          
-                                            <label>Link4:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].links4 || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  links4: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "link-image" && (
-                                          <>
-                                            <label>Size (%):</label>
-                                            <input
-                                              type="range"
-                                              min="10"
-                                              max="100"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              onChange={(e) => {
-                                                const newSize = e.target.value;
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    width: `${newSize}%`,
-                                                    // height: `${newSize * 5}px`, // Adjusting height based on size percentage
-                                                  },
-                                                });
-                                              }}
-                                            />
-                                            <span>
-                                              {parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              %
-                                            </span>
-          
-                                            <ColorPicker
-                  label="Image Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-          
-                                            <label>Link:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].link || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  link: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "logo" && (
-                                          <>
-                                            <label>Size (%):</label>
-                                            <input
-                                              type="range"
-                                              min="10"
-                                              max="100"
-                                              value={
-                                                parseInt(
-                                                  previewContent[
-                                                    selectedIndex
-                                                  ].style.width.replace("%", "")
-                                                ) || 50
-                                              }
-                                              onChange={(e) => {
-                                                const newSize = e.target.value;
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    width: `${newSize}%`,
-                                                    // height: `${newSize * 5}px`, // Adjusting height based on size percentage
-                                                  },
-                                                });
-                                              }}
-                                            />
-                                            <span>
-                                              {parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              ) || 50}
-                                              %
-                                            </span>
-          
-                                            <label>Border Radius:</label>
-                                            <input
-                                              type="range"
-                                              min="0"
-                                              max="50"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.borderRadius.replace("px", "")
-                                              )}
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    borderRadius: `${e.target.value}px`,
-                                                  },
-                                                })
-                                              }
-                                            />
-                        <ColorPicker
-                  label="Image Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                           
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "textwithimage" && (
-                                          <>
-                                           <ColorPicker
-                  label="Text Color"
-                  objectKey="style.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                        <ColorPicker
-                  label="Text Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "imagewithtext" && (
-                                          <>
-                                           <ColorPicker
-                  label="Text Color"
-                  objectKey="style1.color"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                        <ColorPicker
-                  label="Text Background"
-                  objectKey="style1.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "video-icon" && (
-                                          <>
-                                            <label>Size (%):</label>
-                                            <input
-                                              type="range"
-                                              min="50"
-                                              max="100"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              onChange={(e) => {
-                                                const newSize = e.target.value;
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    width: `${newSize}%`,
-                                                  },
-                                                });
-                                              }}
-                                            />
-                                            <span>
-                                              {parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              %
-                                            </span>
-          
-                                            <label>Link:</label>
-                                            <input
-                                              type="text"
-                                              placeholder="Enter URL"
-                                              value={
-                                                previewContent[selectedIndex].link || ""
-                                              }
-                                              onChange={(e) =>
-                                                updateContent(selectedIndex, {
-                                                  link: e.target.value,
-                                                })
-                                              }
-                                            />
-                                          </>
-                                        )}
-          
-                                        {previewContent[selectedIndex].type ===
-                                          "image" && (
-                                          <>
-                                            <label>Size (%):</label>
-                                            <input
-                                              type="range"
-                                              min="10"
-                                              max="100"
-                                              value={parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              onChange={(e) => {
-                                                const newSize = e.target.value;
-                                                updateContent(selectedIndex, {
-                                                  style: {
-                                                    ...previewContent[selectedIndex]
-                                                      .style,
-                                                    width: `${newSize}%`,
-                                                    // height: `${newSize * 5}px`, // Adjusting height based on size percentage
-                                                  },
-                                                });
-                                              }}
-                                            />
-                                            <span>
-                                              {parseInt(
-                                                previewContent[
-                                                  selectedIndex
-                                                ].style.width.replace("%", "")
-                                              )}
-                                              %
-                                            </span>
-                        <ColorPicker
-                  label="Image Background"
-                  objectKey="style.backgroundColor"
-                  previewContent={previewContent}
-                  selectedIndex={selectedIndex}
-                  updateContent={updateContent}
-                />
-                                           
-                                          </>
-                                        )}
-                                      </div>
+                                      <button
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle1: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle1,
+                                              width: "50%",
+                                            },
+                                          })
+                                        }
+                                      >
+                                        Medium
+                                      </button>
+                                      <button
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle1: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle1,
+                                              width: "80%",
+                                            },
+                                          })
+                                        }
+                                      >
+                                        Large
+                                      </button>
                                     </div>
+                                    <label>Border Radius:</label>
+                                    <input
+                                      type="range"
+                                      min="0"
+                                      max="50"
+                                      value={parseInt(
+                                        previewContent[
+                                          selectedIndex
+                                        ].buttonStyle1.borderRadius.replace(
+                                          "px",
+                                          ""
+                                        )
+                                      )}
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          buttonStyle1: {
+                                            ...previewContent[selectedIndex]
+                                              .buttonStyle1,
+                                            borderRadius: `${e.target.value}px`,
+                                          },
+                                        })
+                                      }
+                                    />
                                   </div>
-                                )}
-                              </>
-                            ) : (
+                                  <h4>Button-2 Style</h4>
+                                  <div>
+                                    <label>Button Name:</label>
+                                    <input
+                                      type="text"
+                                      placeholder="Enter button name"
+                                      value={
+                                        previewContent[selectedIndex]
+                                          .content2 || ""
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          content2: e.target.value,
+                                        })
+                                      }
+                                    />
+
+                                    <label>Button Link:</label>
+                                    <input
+                                      type="text"
+                                      value={
+                                        previewContent[selectedIndex].link2
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          link2: e.target.value,
+                                        })
+                                      }
+                                    />
+
+<ColorPicker
+        label="Button Text Color"
+        objectKey="buttonStyle2.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+              <ColorPicker
+        label="Button Text Background"
+        objectKey="buttonStyle2.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+
+                                    <label>Text Alignment:</label>
+                                    <select
+                                      value={
+                                        previewContent[selectedIndex]
+                                          ?.buttonStyle2?.textAlign || ""
+                                      }
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          buttonStyle2: {
+                                            ...previewContent[selectedIndex]
+                                              .buttonStyle2,
+                                            textAlign: e.target.value,
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <option value="left">Left</option>
+                                      <option value="center">Center</option>
+                                      <option value="right">Right</option>
+                                    </select>
+
+                                    <label>Button Size:</label>
+                                    <div>
+                                      <button
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle2: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle2,
+                                              width: "auto",
+                                            },
+                                          })
+                                        }
+                                      >
+                                        Small
+                                      </button>
+                                      <button
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle2: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle2,
+                                              width: "50%",
+                                            },
+                                          })
+                                        }
+                                      >
+                                        Medium
+                                      </button>
+                                      <button
+                                        className="modal-btn-size"
+                                        onClick={() =>
+                                          updateContent(selectedIndex, {
+                                            buttonStyle2: {
+                                              ...previewContent[selectedIndex]
+                                                .buttonStyle2,
+                                              width: "80%",
+                                            },
+                                          })
+                                        }
+                                      >
+                                        Large
+                                      </button>
+                                    </div>
+
+                                    <label>Border Radius:</label>
+                                    <input
+                                      type="range"
+                                      min="0"
+                                      max="50"
+                                      value={parseInt(
+                                        previewContent[
+                                          selectedIndex
+                                        ].buttonStyle2.borderRadius.replace(
+                                          "px",
+                                          ""
+                                        )
+                                      )}
+                                      onChange={(e) =>
+                                        updateContent(selectedIndex, {
+                                          buttonStyle2: {
+                                            ...previewContent[selectedIndex]
+                                              .buttonStyle2,
+                                            borderRadius: `${e.target.value}px`,
+                                          },
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex]?.type ===
+                                "icons" && (
+                                <>
+        
+              <ColorPicker
+        label="Background Color"
+        objectKey="ContentStyle.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                  <label>Link1:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].links1 || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        links1: e.target.value,
+                                      })
+                                    }
+                                  />
+
+                                  <label>Link2:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].links2 || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        links2: e.target.value,
+                                      })
+                                    }
+                                  />
+
+                                  <label>Link3:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].links3 || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        links3: e.target.value,
+                                      })
+                                    }
+                                  />
+
+                                  <label>Link4:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].links4 || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        links4: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "link-image" && (
+                                <>
+                                  <label>Size (%):</label>
+                                  <input
+                                    type="range"
+                                    min="10"
+                                    max="100"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    onChange={(e) => {
+                                      const newSize = e.target.value;
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          width: `${newSize}%`,
+                                          // height: `${newSize * 5}px`, // Adjusting height based on size percentage
+                                        },
+                                      });
+                                    }}
+                                  />
+                                  <span>
+                                    {parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    %
+                                  </span>
+
+                                  <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
+
+                                  <ColorPicker
+        label="Image Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+
+                                  <label>Link:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].link || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        link: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "logo" && (
+                                <>
+                                  <label>Size (%):</label>
+                                  <input
+                                    type="range"
+                                    min="10"
+                                    max="100"
+                                    value={
+                                      parseInt(
+                                        previewContent[
+                                          selectedIndex
+                                        ].style.width.replace("%", "")
+                                      ) || 50
+                                    }
+                                    onChange={(e) => {
+                                      const newSize = e.target.value;
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          width: `${newSize}%`,
+                                          // height: `${newSize * 5}px`, // Adjusting height based on size percentage
+                                        },
+                                      });
+                                    }}
+                                  />
+                                  <span>
+                                    {parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    ) || 50}
+                                    %
+                                  </span>
+
+                                  <label>Border Radius:</label>
+                                  <input
+                                    type="range"
+                                    min="0"
+                                    max="50"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.borderRadius.replace("px", "")
+                                    )}
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          borderRadius: `${e.target.value}px`,
+                                        },
+                                      })
+                                    }
+                                  />
+              <ColorPicker
+        label="Image Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                 
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "textwithimage" && (
+                                <>
+                                 <ColorPicker
+        label="Text Color"
+        objectKey="style.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+              <ColorPicker
+        label="Text Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "imagewithtext" && (
+                                <>
+                                 <ColorPicker
+        label="Text Color"
+        objectKey="style1.color"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+              <ColorPicker
+        label="Text Background"
+        objectKey="style1.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "video-icon" && (
+                                <>
+                                  <label>Size (%):</label>
+                                  <input
+                                    type="range"
+                                    min="50"
+                                    max="100"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    onChange={(e) => {
+                                      const newSize = e.target.value;
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          width: `${newSize}%`,
+                                        },
+                                      });
+                                    }}
+                                  />
+                                  <span>
+                                    {parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    %
+                                  </span>
+
+                                  <label>Link:</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Enter URL"
+                                    value={
+                                      previewContent[selectedIndex].link || ""
+                                    }
+                                    onChange={(e) =>
+                                      updateContent(selectedIndex, {
+                                        link: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </>
+                              )}
+
+                              {previewContent[selectedIndex].type ===
+                                "image" && (
+                                <>
+                                  <label>Size (%):</label>
+                                  <input
+                                    type="range"
+                                    min="10"
+                                    max="100"
+                                    value={parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    onChange={(e) => {
+                                      const newSize = e.target.value;
+                                      updateContent(selectedIndex, {
+                                        style: {
+                                          ...previewContent[selectedIndex]
+                                            .style,
+                                          width: `${newSize}%`,
+                                          // height: `${newSize * 5}px`, // Adjusting height based on size percentage
+                                        },
+                                      });
+                                    }}
+                                  />
+                                  <span>
+                                    {parseInt(
+                                      previewContent[
+                                        selectedIndex
+                                      ].style.width.replace("%", "")
+                                    )}
+                                    %
+                                  </span>
+                                  <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
+       
+              <ColorPicker
+        label="Image Background"
+        objectKey="style.backgroundColor"
+        previewContent={previewContent}
+        selectedIndex={selectedIndex}
+        updateContent={updateContent}
+      />
+                                 
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
                     <div className="style-controls" ref={styleControlsRef}>
                       <h3>Style Controls</h3>
                       <div className="style-item">
@@ -2483,49 +2544,52 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                               <option value="center">Center</option>
                               <option value="right">Right</option>
                             </select>
-
                             <label>Button Size:</label>
-                            <div>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "auto",
-                                    },
-                                  })
-                                }
-                              >
-                                Small
-                              </button>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "60%",
-                                    },
-                                  })
-                                }
-                              >
-                                Medium
-                              </button>
-                              <button
-                                className="modal-btn-size"
-                                onClick={() =>
-                                  updateContent(selectedIndex, {
-                                    style: {
-                                      ...previewContent[selectedIndex].style,
-                                      width: "85%",
-                                    },
-                                  })
-                                }
-                              >
-                                Large
-                              </button>
-                            </div>
+<div>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "50%",
+          margin: "0 auto", // Centering the button
+        },
+      })
+    }
+  >
+    Small
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "70%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Medium
+  </button>
+  <button
+    className="modal-btn-size"
+    onClick={() =>
+      updateContent(selectedIndex, {
+        style: {
+          ...previewContent[selectedIndex].style,
+          width: "90%",
+          margin: "0 auto",
+        },
+      })
+    }
+  >
+    Large
+  </button>
+</div>
+
 
                             <label>Border Radius:</label>
                             <input
@@ -2546,6 +2610,24 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                                 })
                               }
                             />
+                             <label>Button Text Size:</label>
+                            <input
+                              type="range"
+                              min="10"
+                              max="30"
+                              value={parseInt(
+                                (previewContent[selectedIndex]?.style?.fontSize || "15px").replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    fontSize: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
 
                             <label>Link:</label>
                             <input
@@ -2875,6 +2957,7 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                               </div>
                             )}
                             </div>
+                      
                         )}
 
                         {previewContent[selectedIndex]?.type === "icons" && (
@@ -2980,6 +3063,26 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                               )}
                               %
                             </span>
+
+                            <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
 
                             <div className="editor-bg">
                               Image Background
@@ -3323,6 +3426,26 @@ if (!campaignName.includes("IndividualClick-Retarget")) {
                               )}
                               %
                             </span>
+                            <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
+
 
                             <div className="editor-bg">
                               Image Background

@@ -273,7 +273,7 @@ button[data-tooltip]:hover::after {
     display: flex;
     justify-content: center;
     width: 100%;
-    max-width: 650px;
+    max-width: 750px;
     margin-top: 20px;
     padding: 20px;
     background-color: #f9f9f9;
@@ -448,7 +448,7 @@ button[data-tooltip]:hover::after {
   cursor: pointer;
 } */
 .template-preview.mobile-view {
-    width: 375px;
+    width: 500px;
     overflow-x: auto;
 }
 
@@ -1274,6 +1274,7 @@ input:checked+.slider-send:before {
     margin-bottom: 5px;
     text-align: left;
     font-weight: 550;
+    color: black;
   }
   .list-field:hover{
     background-color: rgb(235, 235, 235);
