@@ -1489,6 +1489,25 @@ if (!campaignName.includes("Read-Retarget")) {
         selectedIndex={selectedIndex}
         updateContent={updateContent}
       />
+       <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
                                 </>
                               )}
                               {previewContent[selectedIndex].type === "multipleimage" && (
@@ -2415,6 +2434,25 @@ if (!campaignName.includes("Read-Retarget")) {
                                 }
                               />
                             </div>
+                            <label>Border Radius:</label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="50"
+                              value={parseInt(
+                                previewContent[
+                                  selectedIndex
+                                ].style.borderRadius.replace("px", "")
+                              )}
+                              onChange={(e) =>
+                                updateContent(selectedIndex, {
+                                  style: {
+                                    ...previewContent[selectedIndex].style,
+                                    borderRadius: `${e.target.value}px`,
+                                  },
+                                })
+                              }
+                            />
                           </>
                         )}
 
