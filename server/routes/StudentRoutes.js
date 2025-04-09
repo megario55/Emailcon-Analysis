@@ -279,6 +279,7 @@ router.post('/sendtestmail', async (req, res) => {
     const mailOptions = {
       from: `"${emailData.aliasName}" <${email}>`,
       to: emailData.recipient,
+      replyTo: "megarajan55@gmail.com",
       subject: emailData.subject,
       attachments: Attachments,
 
