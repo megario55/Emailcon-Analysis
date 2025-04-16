@@ -4,51 +4,70 @@ import axios from "axios";
 import cron from "node-cron";
 import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
+// ✅ Cron Initialization Log
 console.log("🎉 Cron job started for annual birthday email campaigns");
 
-// cron.schedule('0 * * * *', async () => {
 cron.schedule('*/2 * * * *', async () => {
+    console.log("\n🔁 Cron triggered at:", new Date().toISOString());
 
     try {
-        const now = new Date();
-        const currentYear = now.getUTCFullYear();
-        const currentMonth = now.getUTCMonth(); // 0-indexed
-        const currentDate = now.getUTCDate();
-        const currentHour = now.getUTCHours();
-        const currentMinute = now.getUTCMinutes();
+        // Get current time in Asia/Kolkata for comparison
+        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth(); // 0-indexed
+        const currentDate = now.getDate();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        console.log("🕒 Local Time (IST):", now.toString());
+        console.log("📅 Today:", { currentYear, currentMonth: currentMonth + 1, currentDate, currentHour, currentMinute });
 
         const camhistories = await Camhistory.find({
             status: "Remainder On",
             campaignname: { $regex: /Birthday Remainder/i }
         });
 
+        console.log(`📦 Total birthday campaigns fetched: ${camhistories.length}`);
+
         const matchingCampaigns = camhistories.filter(camhistory => {
             const scheduledDate = new Date(camhistory.scheduledTime);
-            const scheduledDay = scheduledDate.getUTCDate();
-            const scheduledMonth = scheduledDate.getUTCMonth();
-            const scheduledHour = scheduledDate.getUTCHours();
-            const scheduledMinute = scheduledDate.getUTCMinutes();
+            const scheduledDay = scheduledDate.getDate();
+            const scheduledMonth = scheduledDate.getMonth();
+            const scheduledHour = scheduledDate.getHours();
+            const scheduledMinute = scheduledDate.getMinutes();
+
+            console.log(`📌 Checking campaign: ${camhistory.campaignname}`);
+            console.log("    ⏰ Scheduled at:", scheduledDate.toString());
+            console.log("    🧭 Comparing to:", `${currentDate}-${currentMonth + 1} ${currentHour}:${currentMinute}`);
 
             const timeMatch = scheduledHour === currentHour && scheduledMinute === currentMinute;
             const dateMatch = scheduledDay === currentDate && scheduledMonth === currentMonth;
             const notSentThisYear = camhistory.lastSentYear !== currentYear;
 
-            return timeMatch && dateMatch && notSentThisYear;
+            const result = timeMatch && dateMatch && notSentThisYear;
+            console.log(`    ✅ Match: ${result}`);
+            return result;
         });
 
         if (matchingCampaigns.length === 0) {
-            console.log("No annual birthday campaigns to send at this time.");
+            console.log("⚠️ No matching campaigns to run at this time.");
             return;
         }
 
+        console.log(`🚀 Matching campaigns to run: ${matchingCampaigns.length}`);
+
         await Promise.allSettled(matchingCampaigns.map(async (camhistory) => {
             const groupId = camhistory.groupId?.trim();
-            if (!mongoose.Types.ObjectId.isValid(groupId)) return;
+            if (!mongoose.Types.ObjectId.isValid(groupId)) {
+                console.log(`❌ Invalid groupId for campaign: ${camhistory.campaignname}`);
+                return;
+            }
 
+            console.log(`📨 Fetching students for groupId: ${groupId}`);
             const studentsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/groups/${groupId}/students`);
             const allStudents = studentsResponse.data;
 
-            const today = new Date();
+            const today = now;
             const todayDate = today.getDate();
             const todayMonth = today.getMonth() + 1;
 
@@ -99,6 +118,7 @@ cron.schedule('*/2 * * * *', async () => {
 
                 try {
                     await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
+                    console.log(`✅ Email sent to: ${student.Email}`);
                     sentEmails.push(student.Email);
                 } catch (err) {
                     console.error(`❌ Failed to send to ${student.Email}:`, err.message);
@@ -106,20 +126,20 @@ cron.schedule('*/2 * * * *', async () => {
                 }
             }));
 
-            const total = camhistory.totalcount; // must be set in DB at campaign setup
-            const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;            
+            const total = camhistory.totalcount;
+            const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;
 
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, {
                 sendcount: sentEmails.length,
                 failedcount: failedEmails.length,
                 sentEmails,
                 failedEmails,
-                status: "Remainder On", // So it's active next year again
-                lastSentYear: currentYear, // 👈 Mark as sent this year
+                status: "Remainder On",
+                lastSentYear: currentYear,
                 progress
             });
 
-            console.log(`✅ Annual campaign complete for ${camhistory.campaignname}. Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
+            console.log(`🎉 Campaign "${camhistory.campaignname}" completed. Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
         }));
 
     } catch (err) {
