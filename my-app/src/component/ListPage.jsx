@@ -3,7 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ListPage.css";
-import { FiEdit, FiTrash2, FiRefreshCw, FiEye } from "react-icons/fi"; // Importing icons
+import { FiEdit, FiTrash2,FiEye } from "react-icons/fi"; // Importing icons
 import apiConfig from "../apiconfig/apiConfig";
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, message }) => {
@@ -40,7 +40,7 @@ const ListPage = ({ onClose }) => {
   const [groupName, setGroupName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
-  const [showDeletingToast, setShowDeletingToast] = useState(false);
+  // const [showDeletingToast, setShowDeletingToast] = useState(false);
   const [showEditingToast, setShowEditingToast] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -69,19 +69,19 @@ const ListPage = ({ onClose }) => {
     fetchGroupsAndStudents();
   }, [user]);
 
-  const handleRefresh = () => {
-    axios
-      .get(`${apiConfig.baseURL}/api/stud/groups/${user.id}`)
-      .then((response) => setGroups(response.data))
-      .catch((err) => console.log(err));
+  // const handleRefresh = () => {
+  //   axios
+  //     .get(`${apiConfig.baseURL}/api/stud/groups/${user.id}`)
+  //     .then((response) => setGroups(response.data))
+  //     .catch((err) => console.log(err));
 
-    axios
-      .get(`${apiConfig.baseURL}/api/stud/students`)
-      .then((response) => {
-        setStudents(response.data);
-      })
-      .catch((err) => console.log(err));
-  };
+  //   axios
+  //     .get(`${apiConfig.baseURL}/api/stud/students`)
+  //     .then((response) => {
+  //       setStudents(response.data);
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   // Delete a group
   const handleDeleteGroup = (groupId) => {
@@ -108,38 +108,48 @@ const ListPage = ({ onClose }) => {
     }
   };
   // Delete selected students
+
   const handleDeleteSelectedStudents = () => {
     if (selectedStudents.length === 0) {
       toast.error("Please select contacts to delete.");
       return;
     }
-
-    setShowDeletingToast(true); // Show toast
-
-    // Optimistically update UI before making the request
+  
+    // Show persistent loading toast and store its ID
+    const toastId = toast.loading("Deleting selected contacts...");
+  
+    // Optimistically update UI
     const updatedStudents = students.filter(
       (student) => !selectedStudents.includes(student._id)
     );
     setStudents(updatedStudents);
     setSelectedStudents([]);
-
+  
     axios
       .delete(`${apiConfig.baseURL}/api/stud/students`, {
         data: { studentIds: selectedStudents },
       })
       .then(() => {
-        toast.success("Selected contacts deleted!");
+        // Update the loading toast to success
+        toast.update(toastId, {
+          render: "Selected contacts deleted!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
       })
       .catch(() => {
-        // If deletion fails, revert UI changes
-        toast.error("Failed to delete contacts");
-        setStudents(students); // Restore previous state
-      })
-      .finally(() => {
-        setShowDeletingToast(false); // Hide toast
+        // Revert state and show error toast
+        setStudents(students); // Restore original list
+        toast.update(toastId, {
+          render: "Failed to delete contacts",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
       });
   };
-
+  
   // Edit group name
   const handleEditGroupName = (group) => {
     setEditingGroup(group);
@@ -359,9 +369,7 @@ const ListPage = ({ onClose }) => {
                 <button className="btn" onClick={handleDeleteSelectedStudents}>
                   Delete Selected Contacts
                 </button>
-                <button className="btn-ref" onClick={handleRefresh}>
-                  <FiRefreshCw /> Refresh
-                </button>
+            
                 <div className="student-list">
                   <table>
                     <thead>
@@ -439,76 +447,86 @@ const ListPage = ({ onClose }) => {
               </>
             )}
             {editingStudent && (
-              <div className="edit-student-modal-overlay">
-                <div className="edit-student-modal-content">
-                  <h3>Edit Student</h3>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleSaveStudent();
-                    }}
-                  >
-                    {/* Render input fields dynamically (excluding `_id`) */}
-                    {Object.keys(editFormData).map(
-                      (key) =>
-                        key !== "group" && (
-                          <input
-                            key={key}
-                            type="text"
-                            name={key}
-                            value={editFormData[key] || ""}
-                            onChange={(e) =>
-                              setEditFormData({
-                                ...editFormData,
-                                [key]: e.target.value,
-                              })
-                            }
-                            placeholder={`Enter ${key}`}
-                            className="edit-student-input"
-                          />
-                        )
-                    )}
-
-                    {/* Group Dropdown */}
-                    <select
-                      name="group"
-                      value={editFormData.group || ""}
-                      onChange={(e) => {
-                        const selectedGroup = groups.find(
-                          (group) => group._id === e.target.value
-                        );
-                        setEditFormData({
-                          ...editFormData,
-                          group: selectedGroup?._id || "",
-                        });
-                      }}
-                      className="edit-student-select"
-                    >
-                      <option value="">Select Group</option>
-                      {groups.map((group) => (
-                        <option key={group._id} value={group._id}>
-                          {group.name}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Buttons */}
-                    <div className="edit-student-modal-buttons">
-                      <button className="editbtn" type="submit">
-                        Save
-                      </button>
-                      <button
-                        className="cancelbtn"
-                        type="button"
-                        onClick={() => setEditingStudent(null)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
+  <div className="edit-student-modal-overlay">
+    <div className="edit-student-modal-content">
+      <h3>Edit Student</h3>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSaveStudent();
+        }}
+      >
+        {/* Render input fields dynamically (excluding `_id`) */}
+        {Object.keys(editFormData).map(
+          (key) =>
+            key !== "group" && (
+              <div key={key} className="input-group">
+                <label htmlFor={key} className="input-label">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </label>
+                <input
+                  type="text"
+                  id={key}
+                  name={key}
+                  value={editFormData[key] || ""}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      [key]: e.target.value,
+                    })
+                  }
+                  placeholder={`Enter ${key}`}
+                  className="edit-student-input"
+                />
               </div>
-            )}
+            )
+        )}
+
+        {/* Group Dropdown */}
+        <div className="input-group">
+          <label htmlFor="group" className="input-label">Group</label>
+          <select
+            id="group"
+            name="group"
+            value={editFormData.group || ""}
+            onChange={(e) => {
+              const selectedGroup = groups.find(
+                (group) => group._id === e.target.value
+              );
+              setEditFormData({
+                ...editFormData,
+                group: selectedGroup?._id || "",
+              });
+            }}
+            className="edit-student-select"
+          >
+            <option value="">Select Group</option>
+            {groups.map((group) => (
+              <option key={group._id} value={group._id}>
+                {group.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Buttons */}
+        <div className="edit-student-modal-buttons">
+          <button className="editbtn" type="submit">
+            Save
+          </button>
+          <button
+            className="cancelbtn"
+            type="button"
+            onClick={() => setEditingStudent(null)}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
           </div>
         )}
 
@@ -520,12 +538,12 @@ const ListPage = ({ onClose }) => {
           message="Are you sure you want to delete this group?"
         />
 
-        {/* deleting modal */}
+        {/* deleting modal
         {showDeletingToast && (
           <div className="deleting-toast">
-            Deleting selected contacts, please wait...
+            Deleting selected contacts....
           </div>
-        )}
+        )} */}
         {/* editing modal */}
         {showEditingToast && (
           <div className="deleting-toast">Updated please wait...</div>

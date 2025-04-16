@@ -126,7 +126,7 @@ const GroupfileModal = ({ onClose }) => {
         <div className="modal-content">
           <div className="excel-uploader">
             <h2 className="modal-title">Add Existing Group</h2>
-            <h3 className="modal-section-title">Add Contact</h3>
+            <h3 className="modal-section-title">Add Bulk Contacts</h3>
             <select
               value={selectedGroupForUpload || ""}
               onChange={(e) => setSelectedGroupForUpload(e.target.value)}

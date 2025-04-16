@@ -1,8 +1,8 @@
-import Camhistory from "./models/Camhistory.js";
+import Camhistory from "../models/Camhistory.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import cron from "node-cron";
-import apiConfig from "../my-app/src/apiconfig/apiConfig.js";
+import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
 
 console.log("Cron job started for sending scheduled emails.");
@@ -34,7 +34,7 @@ cron.schedule('* * * * *', async () => {
             
             if (!groupId || groupId.toLowerCase() === "no group") {
                 console.log("No group found, sending emails directly.");
-                await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
+                await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`,{ status: "Pending" });
                 
                 let recipients = camhistory.recipients.split(",").map(email => email.trim());
                 

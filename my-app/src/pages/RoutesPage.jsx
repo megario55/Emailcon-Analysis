@@ -14,6 +14,9 @@ import Readmainpage from "./Readmainpage";
 import Clickmainpage from "./Clickmainpage";
 import Clicksinglemainpage from "./Clicksinglemainpage";
 import TemMainpage from "./TemMainpage";
+import Birthdayeditor from "./Birthdayeditor";
+import Paymenteditor from "./Paymenteditor";
+import RemainderTable from "../component/RemainderTable";
 
 function RoutesPage() {
   return (
@@ -31,6 +34,9 @@ function RoutesPage() {
         <Route path="/campaigntable" element={<CampaignTable />} />
         <Route path="/campaign" element={<Campaign/>} />
         <Route path="/TemMainpage" element={<TemMainpage/>} />
+        <Route path="/birthdayedit" element={<Birthdayeditor/>} />
+        <Route path="/paymentedit" element={<Paymenteditor/>} />
+        <Route path="/remaindertable" element={<RemainderTable/>} />
         <Route path="/readreport/:userId/:campaignId" element={<ReadReport />} />
         {/* Wildcard route to handle all other unknown paths */}
         <Route path="*" element={<ErrorPage />} />
