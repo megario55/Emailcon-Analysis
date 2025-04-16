@@ -3,25 +3,25 @@ import mongoose from "mongoose";
 import axios from "axios";
 import cron from "node-cron";
 import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
+import { DateTime } from "luxon"; // NEW: Luxon for timezone handling
 
 // ✅ Cron Initialization Log
 console.log("🎉 Cron job started for annual birthday email campaigns");
 
 cron.schedule('*/2 * * * *', async () => {
-    console.log("\n🔁 Cron triggered at:", new Date().toISOString());
+    const now = DateTime.now().setZone("Asia/Kolkata");
+    console.log("\n🔁 Cron triggered at (UTC):", new Date().toISOString());
+    console.log("🕒 Local Time (IST):", now.toFormat("yyyy-MM-dd HH:mm:ss"));
+
+    const currentYear = now.year;
+    const currentMonth = now.month;
+    const currentDate = now.day;
+    const currentHour = now.hour;
+    const currentMinute = now.minute;
+
+    console.log("📅 Today:", { currentYear, currentMonth, currentDate, currentHour, currentMinute });
 
     try {
-        // Get current time in Asia/Kolkata
-        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth(); // 0-indexed
-        const currentDate = now.getDate();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-
-        console.log("🕒 Local Time (IST):", now.toString());
-        console.log("📅 Today:", { currentYear, currentMonth: currentMonth + 1, currentDate, currentHour, currentMinute });
-
         const camhistories = await Camhistory.find({
             status: "Remainder On",
             campaignname: { $regex: /Birthday Remainder/i }
@@ -30,18 +30,14 @@ cron.schedule('*/2 * * * *', async () => {
         console.log(`📦 Total birthday campaigns fetched: ${camhistories.length}`);
 
         const matchingCampaigns = camhistories.filter(camhistory => {
-            const scheduledDateIST = new Date(new Date(camhistory.scheduledTime).toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-            const scheduledDay = scheduledDateIST.getDate();
-            const scheduledMonth = scheduledDateIST.getMonth();
-            const scheduledHour = scheduledDateIST.getHours();
-            const scheduledMinute = scheduledDateIST.getMinutes();
+            const scheduledIST = DateTime.fromISO(camhistory.scheduledTime).setZone("Asia/Kolkata");
 
             console.log(`📌 Checking campaign: ${camhistory.campaignname}`);
-            console.log("    ⏰ Scheduled at (IST):", scheduledDateIST.toString());
-            console.log("    🧭 Comparing to:", `${currentDate}-${currentMonth + 1} ${currentHour}:${currentMinute}`);
+            console.log("    ⏰ Scheduled at (IST):", scheduledIST.toFormat("yyyy-MM-dd HH:mm:ss"));
+            console.log("    🧭 Comparing to:", `${currentDate}-${currentMonth} ${currentHour}:${currentMinute}`);
 
-            const timeMatch = scheduledHour === currentHour && scheduledMinute === currentMinute;
-            const dateMatch = scheduledDay === currentDate && scheduledMonth === currentMonth;
+            const timeMatch = scheduledIST.hour === currentHour && scheduledIST.minute === currentMinute;
+            const dateMatch = scheduledIST.day === currentDate && scheduledIST.month === currentMonth;
             const notSentThisYear = camhistory.lastSentYear !== currentYear;
 
             const result = timeMatch && dateMatch && notSentThisYear;
@@ -68,13 +64,13 @@ cron.schedule('*/2 * * * *', async () => {
             const allStudents = studentsResponse.data;
 
             const today = now;
-            const todayDate = today.getDate();
-            const todayMonth = today.getMonth() + 1;
+            const todayDate = today.day;
+            const todayMonth = today.month;
 
             const birthdayStudents = allStudents.filter(student => {
                 if (!student.Date) return false;
-                const dob = new Date(student.Date);
-                return dob.getDate() === todayDate && (dob.getMonth() + 1) === todayMonth;
+                const dob = DateTime.fromISO(student.Date);
+                return dob.day === todayDate && dob.month === todayMonth;
             });
 
             if (birthdayStudents.length === 0) {

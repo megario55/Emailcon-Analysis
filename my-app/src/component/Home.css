@@ -115,6 +115,8 @@ li {
   color: #f48c06;
   font-size: 1rem;
   padding: 10px 0;
+  margin-bottom: 15px;
+  margin-top: 10px;
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
@@ -374,6 +376,10 @@ li {
     width: 100%;
     overflow: hidden;
     /* background-color: #f4f4f4; */
+  }
+  .sidebar-button{
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
   }
   .sidebar-container {
     overflow-y: auto;
