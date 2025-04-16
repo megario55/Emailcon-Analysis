@@ -17,6 +17,7 @@ import TemMainpage from "./TemMainpage";
 import Birthdayeditor from "./Birthdayeditor";
 import Paymenteditor from "./Paymenteditor";
 import RemainderTable from "../component/RemainderTable";
+import Readreportremainder from "../component/Readreportremainder";
 
 function RoutesPage() {
   return (
@@ -38,6 +39,8 @@ function RoutesPage() {
         <Route path="/paymentedit" element={<Paymenteditor/>} />
         <Route path="/remaindertable" element={<RemainderTable/>} />
         <Route path="/readreport/:userId/:campaignId" element={<ReadReport />} />
+        <Route path="/readreportremainder/:userId/:campaignId" element={<Readreportremainder />} />
+
         {/* Wildcard route to handle all other unknown paths */}
         <Route path="*" element={<ErrorPage />} />
         

@@ -403,12 +403,14 @@ function CampaignTable() {
   }
 };
 
-const filteredCampaigns = campaigns.filter((campaign) =>
-    Object.values(campaign)
-      .join(" ")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+const filteredCampaigns = campaigns.filter(campaign => {
+  const campaignName = campaign.campaignname?.toLowerCase() || "";
+  const searchContent = Object.values(campaign).join(" ").toLowerCase();
+  
+  const exclude = campaignName.includes("birthday remainder") || campaignName.includes("payment remainder");
+  return !exclude && searchContent.includes(searchTerm.toLowerCase());
+});
+
 
   return (
     <div className="admin-dashboard-page">

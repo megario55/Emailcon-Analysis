@@ -507,6 +507,7 @@ const Home = () => {
       toast.error("Please Enter Subject.");
       return;
     }
+    setIsLoading(true);
     let sentEmails = [];
     let failedEmails = [];
     let attachments = [];
@@ -597,7 +598,11 @@ if (existingCampaigns.length > 0) {
       sessionStorage.removeItem("firstVisit");
       sessionStorage.removeItem("toggled");
     } catch (error) {
+      setIsLoading(false);
       toast.error("Failed to set payment remainder email.");
+    }
+    finally {
+      setIsLoading(false);
     }
   };
 
@@ -624,6 +629,7 @@ if (existingCampaigns.length > 0) {
       toast.error("Please Enter Subject.");
       return;
     }
+    
 
     try {
       // Fetch students from the selected group
@@ -636,6 +642,7 @@ if (existingCampaigns.length > 0) {
         toast.warning("No students found in the selected group.");
         return;
       }
+      setIsLoading(true);
       let attachments = [];
       if (emailData.attachments && emailData.attachments.length > 0) {
         const formData = new FormData();
@@ -714,11 +721,17 @@ if (existingCampaigns.length > 0) {
       );
       console.log("Initial remainder Campaign History Saved:", campaignResponse.data);
       navigate("/remaindertable");
+      setIsLoading(false);
       sessionStorage.removeItem("firstVisit");
       sessionStorage.removeItem("toggled");
     } catch (error) {
+      setIsLoading(false);
       toast.error("Failed to set remainder email.");
     } 
+    finally { 
+      setIsLoading(false);
+    }
+
   };
 
   return (
@@ -957,9 +970,17 @@ if (existingCampaigns.length > 0) {
       onChange={(e) => setScheduledTime(e.target.value)} // Only stores "HH:MM"
     />
   </div>
-
                 <div className="auto-actions-unique">
-                  <button className="auto-save-unique" onClick={handlesetbirthremainder}>Set Remainder</button>
+                  <button
+                  className="auto-save-unique" onClick={handlesetbirthremainder}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="loader-create" style={{color:"white"}}></span> // Spinner
+                  ) : (
+                    "Set Remainder"
+                  )}{" "}
+                </button>
                   <button className="auto-cancel-unique" onClick={handleCloseModal}>
                     Cancel
                   </button>
@@ -1172,7 +1193,15 @@ if (existingCampaigns.length > 0) {
 
 
                 <div className="auto-actions-unique">
-                  <button className="auto-save-unique" onClick={handlesetpaymentremainder}>Set Remainder</button>
+                  <button className="auto-save-unique" onClick={handlesetpaymentremainder}
+                  disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <span className="loader-create" style={{color:"white"}}></span> // Spinner
+                    ) : (
+                      "Set Remainder"
+                    )}{" "}
+                  </button>
                   <button className="auto-cancel-unique" onClick={handleCloseModal}>
                     Cancel
                   </button>
@@ -2255,6 +2284,18 @@ if (existingCampaigns.length > 0) {
           >
             Templates
           </button>
+          <button
+              className="sidebar-button contact-button"
+              onClick={handleRemainderrview}
+            >
+              Remainders
+            </button>
+            <button
+              className="sidebar-button contact-button"
+              onClick={handleOpenModal}
+            >
+              Automation
+            </button>
         </div>
       </div>
     </>

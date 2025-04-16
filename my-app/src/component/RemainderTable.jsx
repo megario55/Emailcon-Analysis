@@ -48,7 +48,7 @@ function RemainderTable() {
     setShowModal(true);
   };
   const handleview = (userId, campaignId) => {
-    navigate(`/readreport/${userId}/${campaignId}`);
+    navigate(`/readreportremainder/${userId}/${campaignId}`);
   };
    const handleOpenModal = (campaignId, scheduledTime) => {
       console.log(

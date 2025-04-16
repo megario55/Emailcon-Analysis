@@ -113,13 +113,8 @@ li {
   background: none;
   border: 1px solid #f48c06;
   color: #f48c06;
-  /* border:none;
-    outline:none; */
-  /* background-color: #f48c06; */
   font-size: 1rem;
   padding: 10px 0;
-  margin-bottom: 15px;
-  margin-top: 10px;
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
@@ -335,8 +330,10 @@ li {
   }
 
   .mobile-menu {
-    display: flex;
-    gap: 5px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+ 
   }
 
 

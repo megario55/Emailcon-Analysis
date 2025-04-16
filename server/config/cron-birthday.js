@@ -6,7 +6,9 @@ import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
 console.log("🎉 Cron job started for annual birthday email campaigns");
 
-cron.schedule('0 * * * *', async () => {
+// cron.schedule('0 * * * *', async () => {
+cron.schedule('*/2 * * * *', async () => {
+
     try {
         const now = new Date();
         const currentYear = now.getUTCFullYear();
