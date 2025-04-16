@@ -116,7 +116,7 @@ cron.schedule('*/2 * * * *', async () => {
                 progress
             });
 
-            console.log(`🎉 Campaign complete for ${camhistory.campaignname} | Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
+            console.log(`🎉 Campaign complete for ${camhistory.campaignname} | Sent: ${sentEmails.length}, Failed: ${failedEmails.length},Status: ${finalStatus}`);
         }));
 
     } catch (error) {
