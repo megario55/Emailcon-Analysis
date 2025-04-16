@@ -1290,7 +1290,26 @@ router.put("/students/:id", async (req, res) => {
   }
 });
 
+// update student birthday in student model
+// 5. PUT route to update a student's lastSentYear
+router.put("/updateStudent/:id", async (req, res) => {
+  try {
+    // Ensure we only update the 'lastSentYear' field
+    const updatedStudent = await Student.findByIdAndUpdate(
+      req.params.id,
+      { $set: { lastSentYear: req.body.lastSentYear } }, // Only update lastSentYear field
+      { new: true, runValidators: true } // Return updated student and validate fields
+    );
 
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.json(updatedStudent);
+  } catch (err) {
+    res.status(500).json({ message: "Error updating student", error: err });
+  }
+});
 //edit group name
 router.put('/groups/:id', (req, res) => {
   const groupId = req.params.id;

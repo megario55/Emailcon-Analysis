@@ -56,8 +56,8 @@ const camhistorySchema = new mongoose.Schema({
     },
     attachments: [
         {
-          originalName: { type: String },
-          fileUrl: { type: String },
+          originalName: { type: String},
+          fileUrl: { type: String},
         }
       ],
     bgColor: {
@@ -91,12 +91,8 @@ const camhistorySchema = new mongoose.Schema({
             of: String,
         },
     }],
-    lastSentYear: { // Add this field
-        type: Number,
-        required: false, // Optional, depending on your needs
-    }
-}, {
-    strict: false // This allows additional fields
+},{
+    strict: false
 }, {
     timestamps: true, // Automatically stores createdAt and updatedAt
 });
