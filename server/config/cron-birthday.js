@@ -116,6 +116,7 @@ cron.schedule('*/1 * * * *', async () => {
                 sentEmails,
                 failedEmails,
                 status: "Remainder On",
+                lastSentYear: currentYear,
                 progress
             });
 

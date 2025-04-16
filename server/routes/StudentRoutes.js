@@ -1290,7 +1290,6 @@ router.put("/students/:id", async (req, res) => {
   }
 });
 
-// update student birthday in student model
 // 5. PUT route to update a student's lastSentYear
 router.put("/updateStudent/:id", async (req, res) => {
   try {
