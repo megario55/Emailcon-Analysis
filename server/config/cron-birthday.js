@@ -6,7 +6,7 @@ import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
 console.log("🎉 Cron job started for annual birthday email campaigns");
 
-cron.schedule('*/2 * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
     try {
         const now = new Date();
         const currentYear = now.getUTCFullYear();
@@ -104,8 +104,8 @@ cron.schedule('*/2 * * * *', async () => {
                 }
             }));
 
-            const total = camhistory.totalEmails || 0;
-            const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;
+            const total = camhistory.totalcount; // must be set in DB at campaign setup
+            const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;            
 
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, {
                 sendcount: sentEmails.length,
