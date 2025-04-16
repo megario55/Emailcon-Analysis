@@ -80,7 +80,7 @@ cron.schedule('*/10 * * * *', async () => {
                 }));
             } 
             else if (groupId.toLowerCase() === "no id") {
-                console.log("No valid ID found, resending only to failed emails.");
+                console.log("No valid ID found, sending emails directly.");
                 await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
                 
                 await Promise.allSettled(camhistory.exceldata.map(async (student) => {
