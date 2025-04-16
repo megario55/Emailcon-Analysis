@@ -4,82 +4,36 @@ import axios from "axios";
 import cron from "node-cron";
 import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
-console.log("🎉 Cron job started for annual birthday email campaigns");
-
+console.log("Cron job started for sending scheduled birthday emails.");
 cron.schedule('*/1 * * * *', async () => {
-    const triggeredAt = new Date();
-    console.log(`\n🔁 Cron triggered at (UTC): ${triggeredAt.toISOString()}`);
-
     try {
-        const now = new Date();
-        const currentYear = now.getUTCFullYear();
-        const currentMonth = now.getUTCMonth(); // 0-indexed
-        const currentDate = now.getUTCDate();
-        const currentHour = now.getUTCHours();
-        const currentMinute = now.getUTCMinutes();
+        const nowUTC = new Date();
+        const currentHour = nowUTC.getUTCHours();
+        const currentYear = nowUTC.getUTCFullYear();
 
-        console.log("🕒 Current UTC Time:", now.toISOString());
-        console.log("📅 Today (UTC):", {
-            currentYear,
-            currentMonth: currentMonth + 1,
-            currentDate,
-            currentHour,
-            currentMinute,
-        });
+        console.log("Checking birthday campaigns at:", new Date().toLocaleString());
 
         const camhistories = await Camhistory.find({
             status: "Remainder On",
             campaignname: { $regex: /Birthday Remainder/i }
         });
 
-        console.log(`📦 Total birthday campaigns fetched: ${camhistories.length}`);
-
         const matchingCampaigns = camhistories.filter(camhistory => {
-            const scheduledDate = new Date(camhistory.scheduledTime);
-            if (isNaN(scheduledDate.getTime())) {
-                console.warn(`⚠️ Invalid scheduledTime for campaign: ${camhistory.campaignname}`, camhistory.scheduledTime);
-                return false;
-            }
-
-            const scheduledDay = scheduledDate.getUTCDate();
-            const scheduledMonth = scheduledDate.getUTCMonth();
-            const scheduledHour = scheduledDate.getUTCHours();
-            const scheduledMinute = scheduledDate.getUTCMinutes();
-
-            console.log(`📌 Checking campaign: ${camhistory.campaignname}`);
-            console.log("    ⏰ Scheduled at (UTC):", scheduledDate.toISOString());
-            console.log("    🧭 Comparing to:", `${currentDate}-${currentMonth + 1} ${currentHour}:${currentMinute}`);
-
-            const timeMatch = scheduledHour === currentHour && scheduledMinute === currentMinute;
-            const dateMatch = scheduledDay === currentDate && scheduledMonth === currentMonth;
-            const notSentThisYear = camhistory.lastSentYear !== currentYear;
-
-            const isMatch = timeMatch && dateMatch && notSentThisYear;
-            console.log(`    ✅ Match: ${isMatch}`);
-
-            return isMatch;
+            const scheduledHour = new Date(camhistory.scheduledTime).getUTCHours();
+            return scheduledHour === currentHour;
         });
 
         if (matchingCampaigns.length === 0) {
-            console.log("⚠️ No annual birthday campaigns to send at this time.");
+            console.log("No birthday campaigns scheduled for this hour.");
             return;
         }
 
-        console.log(`🚀 Matching campaigns to run: ${matchingCampaigns.length}`);
-
         await Promise.allSettled(matchingCampaigns.map(async (camhistory) => {
-            console.log(`🎯 Running campaign: ${camhistory.campaignname}`);
-
             const groupId = camhistory.groupId?.trim();
-            if (!mongoose.Types.ObjectId.isValid(groupId)) {
-                console.log(`❌ Invalid groupId for campaign: ${camhistory.campaignname}`);
-                return;
-            }
+            if (!mongoose.Types.ObjectId.isValid(groupId)) return;
 
-            console.log(`📨 Fetching students for groupId: ${groupId}`);
             const studentsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/groups/${groupId}/students`);
             const allStudents = studentsResponse.data;
-            console.log(`👥 Total students in group: ${allStudents.length}`);
 
             const today = new Date();
             const todayDate = today.getDate();
@@ -87,27 +41,32 @@ cron.schedule('*/1 * * * *', async () => {
 
             const birthdayStudents = allStudents.filter(student => {
                 if (!student.Date) return false;
+
                 const dob = new Date(student.Date);
-                return dob.getDate() === todayDate && (dob.getMonth() + 1) === todayMonth;
+                const lastSent = student.lastSentYear || 0; // Add this field in DB later
+
+                return (
+                    dob.getDate() === todayDate &&
+                    (dob.getMonth() + 1) === todayMonth &&
+                    lastSent < currentYear
+                );
             });
 
-            console.log(`🎂 Students with birthdays today: ${birthdayStudents.length}`);
-
             if (birthdayStudents.length === 0) {
-                console.log(`🎈 No birthdays today for campaign: ${camhistory.campaignname}`);
+                console.log("No students with birthdays today for campaign:", camhistory.campaignname);
                 return;
             }
 
-            let sentEmails = [], failedEmails = [];
+            let sentEmails = [];
+            let failedEmails = [];
 
-            console.log(`📤 Updating campaign status to "Pending"...`);
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
 
             await Promise.allSettled(birthdayStudents.map(async (student) => {
-                let subject = camhistory.subject;
+                let personalizedSubject = camhistory.subject;
                 Object.entries(student).forEach(([key, value]) => {
                     const regex = new RegExp(`\\{?${key}\\}?`, "g");
-                    subject = subject.replace(regex, value != null ? String(value).trim() : "");
+                    personalizedSubject = personalizedSubject.replace(regex, value != null ? String(value).trim() : "");
                 });
 
                 const personalizedContent = camhistory.previewContent.map(item => {
@@ -122,7 +81,7 @@ cron.schedule('*/1 * * * *', async () => {
 
                 const emailData = {
                     recipientEmail: student.Email,
-                    subject,
+                    subject: personalizedSubject,
                     body: JSON.stringify(personalizedContent),
                     bgColor: camhistory.bgColor,
                     previewtext: camhistory.previewtext,
@@ -135,10 +94,15 @@ cron.schedule('*/1 * * * *', async () => {
 
                 try {
                     await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
-                    console.log(`✅ Email sent to: ${student.Email}`);
                     sentEmails.push(student.Email);
-                } catch (err) {
-                    console.error(`❌ Failed to send to ${student.Email}:`, err.message);
+
+                    // Optional: Save lastSentYear in DB via API
+                    await axios.put(`${apiConfig.baseURL}/api/stud/updateStudent/${student._id}`, {
+                        lastSentYear: currentYear
+                    });
+
+                } catch (error) {
+                    console.error(`Failed to send email to ${student.Email}:`, error.message);
                     failedEmails.push(student.Email);
                 }
             }));
@@ -146,7 +110,6 @@ cron.schedule('*/1 * * * *', async () => {
             const total = camhistory.totalEmails || 0;
             const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;
 
-            console.log(`📊 Finalizing campaign stats...`);
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, {
                 sendcount: sentEmails.length,
                 failedcount: failedEmails.length,
@@ -157,10 +120,10 @@ cron.schedule('*/1 * * * *', async () => {
                 progress
             });
 
-            console.log(`🎉 Campaign "${camhistory.campaignname}" complete. Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
+            console.log(`🎉 Campaign complete for ${camhistory.campaignname} | Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
         }));
 
-    } catch (err) {
-        console.error("❌ Error in annual birthday cron:", err.message);
+    } catch (error) {
+        console.error("❌ Error in birthday cron job:", error);
     }
 });
