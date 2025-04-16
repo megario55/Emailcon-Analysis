@@ -11,7 +11,7 @@ cron.schedule('*/2 * * * *', async () => {
     console.log("\n🔁 Cron triggered at:", new Date().toISOString());
 
     try {
-        // Get current time in Asia/Kolkata for comparison
+        // Get current time in Asia/Kolkata
         const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth(); // 0-indexed
@@ -30,14 +30,14 @@ cron.schedule('*/2 * * * *', async () => {
         console.log(`📦 Total birthday campaigns fetched: ${camhistories.length}`);
 
         const matchingCampaigns = camhistories.filter(camhistory => {
-            const scheduledDate = new Date(camhistory.scheduledTime);
-            const scheduledDay = scheduledDate.getDate();
-            const scheduledMonth = scheduledDate.getMonth();
-            const scheduledHour = scheduledDate.getHours();
-            const scheduledMinute = scheduledDate.getMinutes();
+            const scheduledDateIST = new Date(new Date(camhistory.scheduledTime).toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+            const scheduledDay = scheduledDateIST.getDate();
+            const scheduledMonth = scheduledDateIST.getMonth();
+            const scheduledHour = scheduledDateIST.getHours();
+            const scheduledMinute = scheduledDateIST.getMinutes();
 
             console.log(`📌 Checking campaign: ${camhistory.campaignname}`);
-            console.log("    ⏰ Scheduled at:", scheduledDate.toString());
+            console.log("    ⏰ Scheduled at (IST):", scheduledDateIST.toString());
             console.log("    🧭 Comparing to:", `${currentDate}-${currentMonth + 1} ${currentHour}:${currentMinute}`);
 
             const timeMatch = scheduledHour === currentHour && scheduledMinute === currentMinute;
