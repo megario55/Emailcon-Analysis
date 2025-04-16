@@ -4,33 +4,41 @@ import axios from "axios";
 import cron from "node-cron";
 import apiConfig from "../../my-app/src/apiconfig/apiConfig.js";
 
-console.log("Cron job started for sending scheduled birthday emails.");
+console.log("🎉 Cron job started for annual birthday email campaigns");
 
 cron.schedule('*/2 * * * *', async () => {
     try {
-        const nowUTC = new Date();
-        const currentHour = nowUTC.getUTCHours();
+        const now = new Date();
+        const currentYear = now.getUTCFullYear();
+        const currentMonth = now.getUTCMonth(); // 0-indexed
+        const currentDate = now.getUTCDate();
+        const currentHour = now.getUTCHours();
+        const currentMinute = now.getUTCMinutes();
 
-        console.log("Checking birthday campaigns at:", new Date().toLocaleString());
-
-        // Step 1: Get relevant campaigns
         const camhistories = await Camhistory.find({
             status: "Remainder On",
             campaignname: { $regex: /Birthday Remainder/i }
         });
 
-        // Step 2: Filter campaigns by scheduled hour
         const matchingCampaigns = camhistories.filter(camhistory => {
-            const scheduledHour = new Date(camhistory.scheduledTime).getUTCHours();
-            return scheduledHour === currentHour;
+            const scheduledDate = new Date(camhistory.scheduledTime);
+            const scheduledDay = scheduledDate.getUTCDate();
+            const scheduledMonth = scheduledDate.getUTCMonth();
+            const scheduledHour = scheduledDate.getUTCHours();
+            const scheduledMinute = scheduledDate.getUTCMinutes();
+
+            const timeMatch = scheduledHour === currentHour && scheduledMinute === currentMinute;
+            const dateMatch = scheduledDay === currentDate && scheduledMonth === currentMonth;
+            const notSentThisYear = camhistory.lastSentYear !== currentYear;
+
+            return timeMatch && dateMatch && notSentThisYear;
         });
 
         if (matchingCampaigns.length === 0) {
-            console.log("No birthday campaigns scheduled for this hour.");
+            console.log("No annual birthday campaigns to send at this time.");
             return;
         }
 
-        // Step 3: Process each campaign
         await Promise.allSettled(matchingCampaigns.map(async (camhistory) => {
             const groupId = camhistory.groupId?.trim();
             if (!mongoose.Types.ObjectId.isValid(groupId)) return;
@@ -38,7 +46,6 @@ cron.schedule('*/2 * * * *', async () => {
             const studentsResponse = await axios.get(`${apiConfig.baseURL}/api/stud/groups/${groupId}/students`);
             const allStudents = studentsResponse.data;
 
-            // 🎂 Step 4: Filter students with today's birthday
             const today = new Date();
             const todayDate = today.getDate();
             const todayMonth = today.getMonth() + 1;
@@ -50,21 +57,19 @@ cron.schedule('*/2 * * * *', async () => {
             });
 
             if (birthdayStudents.length === 0) {
-                console.log("No students with birthdays today for campaign:", camhistory.campaignname);
+                console.log(`🎈 No birthdays today for campaign: ${camhistory.campaignname}`);
                 return;
             }
 
-            let sentEmails = [];
-            let failedEmails = [];
+            let sentEmails = [], failedEmails = [];
 
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, { status: "Pending" });
 
             await Promise.allSettled(birthdayStudents.map(async (student) => {
-                // Replace placeholders in subject
-                let personalizedSubject = camhistory.subject;
+                let subject = camhistory.subject;
                 Object.entries(student).forEach(([key, value]) => {
                     const regex = new RegExp(`\\{?${key}\\}?`, "g");
-                    personalizedSubject = personalizedSubject.replace(regex, value != null ? String(value).trim() : "");
+                    subject = subject.replace(regex, value != null ? String(value).trim() : "");
                 });
 
                 const personalizedContent = camhistory.previewContent.map(item => {
@@ -79,7 +84,7 @@ cron.schedule('*/2 * * * *', async () => {
 
                 const emailData = {
                     recipientEmail: student.Email,
-                    subject: personalizedSubject,
+                    subject,
                     body: JSON.stringify(personalizedContent),
                     bgColor: camhistory.bgColor,
                     previewtext: camhistory.previewtext,
@@ -93,33 +98,29 @@ cron.schedule('*/2 * * * *', async () => {
                 try {
                     await axios.post(`${apiConfig.baseURL}/api/stud/sendbulkEmail`, emailData);
                     sentEmails.push(student.Email);
-                } catch (error) {
-                    console.error(`Failed to send email to ${student.Email}:`, error);
+                } catch (err) {
+                    console.error(`❌ Failed to send to ${student.Email}:`, err.message);
                     failedEmails.push(student.Email);
                 }
             }));
 
-            // Step 5: Update progress
             const total = camhistory.totalEmails || 0;
             const progress = total > 0 ? Math.round((sentEmails.length / total) * 100) : 0;
-            const finalStatus = failedEmails.length > 0 ? "Remainder Failed" : "Remainder Processed";
-            if (progress === 100) {
-                finalStatus = "Remainder Completed";
-            }
 
             await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${camhistory._id}`, {
                 sendcount: sentEmails.length,
                 failedcount: failedEmails.length,
                 sentEmails,
                 failedEmails,
-                status: finalStatus,
+                status: "Remainder On", // So it's active next year again
+                lastSentYear: currentYear, // 👈 Mark as sent this year
                 progress
             });
 
-            console.log(`🎉 Campaign complete for ${camhistory.campaignname} | Sent: ${sentEmails.length}, Failed: ${failedEmails.length},Status: ${finalStatus}`);
+            console.log(`✅ Annual campaign complete for ${camhistory.campaignname}. Sent: ${sentEmails.length}, Failed: ${failedEmails.length}`);
         }));
 
-    } catch (error) {
-        console.error("❌ Error in birthday cron job:", error);
+    } catch (err) {
+        console.error("❌ Error in annual birthday cron:", err.message);
     }
 });

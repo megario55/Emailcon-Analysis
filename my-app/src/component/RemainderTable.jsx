@@ -124,24 +124,23 @@ function RemainderTable() {
         }
       };
       
-  const handleToggle = async (e, campaignId) => {
-    const isChecked = e.target.checked; // Get toggle state
-
-    try {
-      const newStatus = isChecked ? "Remainder On" : "Remainder Off";
-
-      // Update status and scheduled time in DB
-      await axios.put(
-        `${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`,
-        {
-          status: newStatus,
+      const handleToggle = async (e, campaignId) => {
+        const isChecked = e.target.checked;
+      
+        try {
+          // If toggle is ON, always set to Remainder On
+          const newStatus = isChecked ? "Remainder On" : "Remainder Off";
+      
+          await axios.put(`${apiConfig.baseURL}/api/stud/camhistory/${campaignId}`, {
+            status: newStatus,
+          });
+      
+          console.log(`Campaign ${campaignId} status updated to ${newStatus}`);
+        } catch (error) {
+          console.error("Error updating remainder campaign status:", error);
         }
-      );
-    } catch (error) {
-      console.error("Error updating remainder campaign status:", error);
-    }
-  };
-
+      };
+      
 
  
 const filteredCampaigns = campaigns.filter((campaign) =>
