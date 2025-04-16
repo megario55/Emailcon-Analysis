@@ -712,6 +712,7 @@ const handleTemplateSelect = (template) => {
         .then((res) => {
           console.log("Template saved successfully:", res.data);
           toast.success("Template Saved Successfully");
+          navigate("/home");
           setTimeout(()=>{
           setShowTemplateModal(false);
           setTemplateName("");

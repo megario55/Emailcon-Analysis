@@ -1395,17 +1395,27 @@ router.post('/template', async (req, res) => {
   }
 });
 
-//getting all template
+// Get all templates for a user
 router.get('/templates/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  // Optional: validate userId format (especially if using MongoDB ObjectId)
+  if (!userId || userId.length < 10) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
+
   try {
-    const templates = await Template.find({
-      user: req.params.userId
-    });
-    res.json(templates);
+    const templates = await Template.find({ user: userId });
+
+    // Optional: handle no templates found
+    if (!templates || templates.length === 0) {
+      return res.status(404).json({ message: 'No templates found' });
+    }
+
+    res.status(200).json(templates);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error fetching templates'
-    });
+    console.error("Error in /templates/:userId route:", error); // more detailed logging
+    res.status(500).json({ message: 'Error fetching templates', error: error.message });
   }
 });
 
